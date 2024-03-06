@@ -31,3 +31,17 @@ class Datosreunionvirtual(models.Model):
     class Meta:
         managed = False
         db_table = 'datosreunionvirtual'
+
+class Diahora(models.Model):
+    id_diahora = models.AutoField(primary_key=True)
+    dia = models.CharField(max_length=15, blank=True, null=True)
+    hora_inicio = models.TimeField(blank=True, null=True)
+    hora_termino = models.TimeField(blank=True, null=True)
+    modalidad = models.CharField(max_length=15, blank=True, null=True)
+    estado = models.CharField(max_length=15, blank=True, null=True)
+    eslibre = models.BooleanField(db_column='esLibre', max_length=15, blank=True, null=True)  # Field name made lowercase.
+    idasesor = models.ForeignKey(Asesor, models.CASCADE, db_column='idAsesor', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'diahora'

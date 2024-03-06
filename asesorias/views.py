@@ -1,39 +1,68 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from models import Usuario
+from .models import Asesoria, Asesor, Diahora, Usuario
+from django.core.exceptions import ObjectDoesNotExist
+from utils.validadores import validar_fecha
+from utils.email import enviarCorreo
 
 import re
 
 @api_view(['POST'])
-def registrarUsuario(request):
+def registrarAsesoria(request):
     # Obtener los datos de la peticion
-    nombre = request.data.get('nombre')
-    matricula = request.data.get('matricula')
-    email = request.data.get('email')
-    password = request.data.get('password')
+    tipo = request.data.get('tipo')
+    tema = request.data.get('tema')
+    fecha = request.data.get('fecha')
+    idAsesor = request.data.get('idAsesor')
+    idDiaHora = request.data.get('idDiaHora')
+    idUsuario = request.data.get('idUsuario')
 
-    if nombre is not None and matricula is not None and password is not None and email is not None:
-        
-        regexMatricula = r'S\d{8}'
-        regexEmail = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
-        regexPassword = r'^.{8,16}$'
+    if tipo is not None and tema is not None and fecha is not None and idAsesor is not None and idDiaHora is not None and idUsuario is not None:
 
-        if not re.match(regexMatricula, matricula):
-            return Response({'mensaje': 'La matricula no cumple los requisitos para que sea valida', "error": True}, status=200)
+        if len(tema) > 200:
+             return Response({'mensaje': 'Error, el tema supera el numero de caracteres.', "error": True}, status=200)
+        try:
+            asesor = Asesor.objects.get(id_asesor=idAsesor)
+        except ObjectDoesNotExist:
+            return Response({'mensaje': 'Error, el asesor no existe en la base de datos.', "error": True}, status=200)
         
-        if not re.match(regexEmail, email):
-            return Response({'mensaje': 'Correo ingresado no valido', "error": True}, status=200)
+        try:
+            diaHora= Diahora.objects.get(id_diahora=idDiaHora)
+        except ObjectDoesNotExist:
+            return Response({'mensaje': 'Error, el horario elegido no existe en la base de datos.', "error": True}, status=200)
         
-        if not re.match(regexPassword, password):
-            return Response({'mensaje': 'La contrasena no cumple los requisitos para que sea valida', "error": True}, status=200)
+        try:
+            usuario = Usuario.objects.get(id_usuario=idUsuario)
+        except ObjectDoesNotExist:
+            return Response({'mensaje': 'Error, el usuario no existe en la base de datos.', "error": True}, status=200)
         
-        if Usuario.objects.filter(email=email).exists() and Usuario.objects.filter(matricula=matricula).exists():
-            return Response({'mensaje': 'Ya existe un usuario con estas credenciales', "error": True}, status=200)
-        
-        nuevo_usuario = Usuario(nombre=nombre, matricula=matricula, email=email, password=password)
+        nueva_asesoria = Asesoria(tipo=tipo, tema=tema, fecha=fecha, idasesor=asesor, iddiahora= diaHora, idusuario=usuario)
 
-        nuevo_usuario.save()
+
+        nueva_asesoria.save()
    
         return Response({'mensaje': 'El usuario fue registrado correctamente', "error": False}, status=200)  
     else:
         return Response({'mensaje': 'Bad request', "error": True}, status=400) 
+    
+@api_view(['DELETE'])
+def eliminarAsesoria(request):
+    # Obtener los datos de la peticion
+    idAsesoria = request.data.get('nombre')
+    matricula = request.data.get('matricula')
+    email = request.data.get('email')
+    password = request.data.get('password')
+
+    enviarCorreo('fabriii', 'afabri24@gmail.com')
+
+    return Response({'mensaje': 'Eliminado correctamente', "error": False}, status=200) 
+
+
+
+
+
+
+
+
+
+

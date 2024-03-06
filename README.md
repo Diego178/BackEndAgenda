@@ -31,6 +31,11 @@ Tienes que enviar un json asi:
     "password": "12345678"
 }
 
+Respuestas:
+    - Error
+        Los mensajes de error pueden ser por mandar datos invalidos, incompletos, o que el email no sea valido, o que ya estuviera registrado, y por ultimo, que la contraseña no cumpla los caracteres max (16) o min (8)
+    - Valido
+        Si se envian los datos bien regresata error false y un mensaje satisfactorio.
 
 
 http://127.0.0.1:8000/api/usuarios/registrar/ # Este es para registrar un usuario
@@ -44,5 +49,19 @@ Tienes que enviar un json asi:
     "password": "1234567"
 }
 
+Respuestas:
+    - Error
+        Los mensajes de error pueden ser por mandar datos invalidos, incompletos, o que el email no sea valido, o que ya estuviera registrado, y por ultimo, que la contraseña no cumpla los caracteres max (16) o min (8)
+    - Valido
+        Si se envian los datos bien regresata error false y un mensaje satisfactorio.
 
+http://127.0.0.1:8000/api/asesores/registrarDatosReunion/
+
+http://127.0.0.1:8000/api/asesores/registrarDiaHora/
+
+//TODO
+- registrar datos reunion virtual
+- registrar asesoria
+- editar asesoria
+- hacer pruebas con el envio de correo
 

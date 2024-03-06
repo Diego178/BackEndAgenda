@@ -19,21 +19,24 @@ def registrarUsuario(request):
         regexPassword = r'^.{8,16}$'
 
         if not re.match(regexMatricula, matricula):
-            return Response({'mensaje': 'La matricula no cumple los requisitos para que sea valida', "error": True}, status=200)
+            return Response({'mensaje': 'La matricula no cumple los requisitos para que sea valida.', "error": True}, status=200)
         
         if not re.match(regexEmail, email):
-            return Response({'mensaje': 'Correo ingresado no valido', "error": True}, status=200)
+            return Response({'mensaje': 'Correo ingresado no valido.', "error": True}, status=200)
         
         if not re.match(regexPassword, password):
-            return Response({'mensaje': 'La contrasena no cumple los requisitos para que sea valida', "error": True}, status=200)
+            return Response({'mensaje': 'La contrasena no cumple los requisitos para que sea valida.', "error": True}, status=200)
         
-        if Usuario.objects.filter(email=email).exists() and Usuario.objects.filter(matricula=matricula).exists():
-            return Response({'mensaje': 'Ya existe un usuario con estas credenciales', "error": True}, status=200)
+        if Usuario.objects.filter(email=email).exists():
+            return Response({'mensaje': 'Ya existe un usuario con este correo electronico registrado.', "error": True}, status=200)
+        
+        if Usuario.objects.filter(matricula=matricula).exists():
+            return Response({'mensaje': 'Ya existe un usuario con esta matricula registrada.', "error": True}, status=200)
         
         nuevo_usuario = Usuario(nombre=nombre, matricula=matricula, email=email, password=password)
 
         nuevo_usuario.save()
    
-        return Response({'mensaje': 'El usuario fue registrado correctamente', "error": False}, status=200)  
+        return Response({'mensaje': 'El usuario fue registrado correctamente.', "error": False}, status=200)  
     else:
         return Response({'mensaje': 'Bad request', "error": True}, status=400) 
