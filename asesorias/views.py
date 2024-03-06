@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from .models import Asesoria, Asesor, Diahora, Usuario
 from django.core.exceptions import ObjectDoesNotExist
 from utils.validadores import validar_fecha
-from utils.email import enviarCorreo
+from servicioAgenda.email import enviarCorreo
 
 import re
 

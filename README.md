@@ -64,4 +64,9 @@ http://127.0.0.1:8000/api/asesores/registrarDiaHora/
 - registrar asesoria
 - editar asesoria
 - hacer pruebas con el envio de correo
+- obtener todas las asesorias
+
+
+http://127.0.0.1:8000/api/asesorias/eliminar/ # No lleva cuerpo
+
 
