@@ -2,10 +2,20 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import Asesoria, Asesor, Diahora, Usuario
 from django.core.exceptions import ObjectDoesNotExist
+from .serializers import AsesoriaSerializer
 from utils.validadores import validar_fecha
 from servicioAgenda.email import enviarCorreo
+from utils.validadores import validar_fecha
 
 import re
+
+@api_view(['GET'])
+def obtenerAsesoriasAsesor(request, id):
+    # Obtener los datos de la peticion
+    asesorias = Asesoria.objects.filter(idasesor=id)
+    serializer = AsesoriaSerializer(asesorias, many=True)
+    return Response(serializer.data, status=200)
+
 
 @api_view(['POST'])
 def registrarAsesoria(request):
@@ -18,9 +28,15 @@ def registrarAsesoria(request):
     idUsuario = request.data.get('idUsuario')
 
     if tipo is not None and tema is not None and fecha is not None and idAsesor is not None and idDiaHora is not None and idUsuario is not None:
-
+        if(tipo != 'asesoria' and tipo != 'oral'):
+            return Response({'mensaje': 'Tipo no valido', "error": True}, status=400)
+        
         if len(tema) > 200:
              return Response({'mensaje': 'Error, el tema supera el numero de caracteres.', "error": True}, status=200)
+        
+        if not validar_fecha(fecha):
+             return Response({'mensaje': 'Error, la fecha no es valida.', "error": False}, status=200)
+        
         try:
             asesor = Asesor.objects.get(id_asesor=idAsesor)
         except ObjectDoesNotExist:
