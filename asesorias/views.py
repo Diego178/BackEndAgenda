@@ -54,7 +54,6 @@ def registrarAsesoria(request):
         
         nueva_asesoria = Asesoria(tipo=tipo, tema=tema, fecha=fecha, idasesor=asesor, iddiahora= diaHora, idusuario=usuario)
 
-
         nueva_asesoria.save()
    
         return Response({'mensaje': 'El usuario fue registrado correctamente', "error": False}, status=200)  

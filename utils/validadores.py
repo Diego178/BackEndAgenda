@@ -29,3 +29,13 @@ def validar_fecha(fecha):
         return True
     except ValueError:
         return False
+    
+def es_valido_modalidad(modalidad):
+    modalidades = {
+        'virtual',
+        'presencial'
+    }
+    for string in modalidades:
+        if string == modalidad:
+            return True
+    return False

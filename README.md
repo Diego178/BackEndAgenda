@@ -57,16 +57,48 @@ Respuestas:
 
 http://127.0.0.1:8000/api/asesores/registrarDatosReunion/
 
+{
+    "url": "https://uveracruzana.zoom.us/j/82030863166?pwd=Y3Vta0JPUnM2a1RuTEtvK1Y5SGMzUT09",
+    "password": "837192",
+    "id_reunion": "820 3086 3166",
+    "idAsesor": 4
+}
+
 http://127.0.0.1:8000/api/asesores/registrarDiaHora/
 
+{
+  "dia": "lunes",
+  "hora_inicio": "10:30:00",
+  "hora_termino": "11:",
+  "modalidad": "virtual",
+  "idAsesor": 2
+}
+
 //TODO
-- registrar datos reunion virtual
-- registrar asesoria
-- editar asesoria
-- hacer pruebas con el envio de correo
-- obtener todas las asesorias
+-agregar hora
+-editar hora
+-eliminar hora
+-obtener horas
+-eliminar asesoria
 
 
 http://127.0.0.1:8000/api/asesorias/eliminar/ # No lleva cuerpo
+
+http://127.0.0.1:8000/api/asesorias/obtenerAsesor/<id_asesor>/
+
+http://127.0.0.1:8000/api/asesores/actualizarDiaHora/
+
+{
+  "idDiaHora": 1,
+  "dia": "martes",
+  "hora_inicio": "10:30:00",
+  "hora_termino": "12:25:00",
+  "modalidad": "virtual",
+  "esLibre": false,
+  "estado": "activo",
+  "idAsesor": 2
+}
+
+
 
 

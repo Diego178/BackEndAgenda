@@ -1,7 +1,7 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import Asesor, Datosreunionvirtual, Diahora
-from utils.validadores import es_dia_semana, es_hora_valida
+from utils.validadores import es_dia_semana, es_hora_valida, es_valido_modalidad
 from django.core.exceptions import ObjectDoesNotExist
 import re 
 
@@ -97,6 +97,45 @@ def registrarDiaHora(request):
         nuevo_datos.save()
    
         return Response({'mensaje': 'Los datos de la reunion fueron registrados correctamente', "error": False}, status=200)
+
+    else:
+        return Response({'mensaje': 'Bad request', "error": True}, status=400)
+    
+@api_view(['PUT'])
+def actuaizarHoraDia(request):
+    id_dia_hora = request.data.get('idDiaHora')
+    dia = request.data.get('dia')
+    hora_inicio = request.data.get('hora_inicio')
+    hora_termino = request.data.get('hora_termino')
+    modalidad = request.data.get('modalidad')
+    estado = request.data.get('estado')
+    es_libre = request.data.get('esLibre')
+    id_asesor = request.data.get('idAsesor')
+
+    if id_dia_hora is not None and dia is not None and hora_inicio is not None and hora_termino is not None and modalidad is not None and id_asesor is not None and estado is not None and es_libre is not None:
+        
+        try:
+            asesor = Asesor.objects.get(id_asesor=id_asesor)
+        except ObjectDoesNotExist:
+            return Response({'mensaje': 'Error, el asesor no existe en la base de datos.', "error": True}, status=200)
+        
+        if not es_dia_semana(dia):
+             return Response({'mensaje': 'Error, el dia se la semana no es valido.', "error": False}, status=200)
+        
+        if not es_hora_valida(hora_inicio):
+             return Response({'mensaje': 'Error, la hora de inicio no es valida.', "error": False}, status=200)
+        
+        if not es_hora_valida(hora_termino):
+             return Response({'mensaje': 'Error, la hora de termino no es valida.', "error": False}, status=200)
+            
+        if not es_valido_modalidad(modalidad):
+             return Response({'mensaje': 'Error, la modalidad no es valida.', "error": False}, status=200)
+        
+        nuevo_datos = Diahora(id_diahora=id_dia_hora, dia=dia, hora_inicio=hora_inicio, hora_termino=hora_termino, modalidad=modalidad, idasesor=asesor, eslibre=es_libre, estado=estado)
+
+        nuevo_datos.save()
+   
+        return Response({'mensaje': 'Los datos de la reunion fueron actualizados correctamente', "error": False}, status=200)
 
     else:
         return Response({'mensaje': 'Bad request', "error": True}, status=400)
