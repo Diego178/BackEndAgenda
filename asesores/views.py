@@ -1,8 +1,9 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .models import Asesor, Datosreunionvirtual, Diahora
+from .models import Asesor, Datosreunionvirtual, Diahora, Asesoria
 from utils.validadores import es_dia_semana, es_hora_valida, es_valido_modalidad
 from django.core.exceptions import ObjectDoesNotExist
+from servicioAgenda.authentication import verificarTokenAsesor, verificarToken
 import re 
 
 @api_view(['POST'])
@@ -12,6 +13,11 @@ def registrarAsesor(request):
     idioma = request.data.get('idioma')
     email = request.data.get('email')
     password = request.data.get('password')
+    token = request.data.get('token')
+
+    valido, mensaje = verificarToken(token)
+    if not valido:
+        return Response({'mensaje': mensaje, "error": True}, status=200)
 
     if nombre is not None and idioma is not None and password is not None and email is not None:
 
@@ -43,6 +49,12 @@ def registrarDatosReunionVirtual(request):
     password = request.data.get('password')
     id_reunion = request.data.get('id_reunion')
     idAsesor = request.data.get('idAsesor')
+    token = request.data.get('token')
+
+
+    valido, mensaje = verificarTokenAsesor(token)
+    if not valido:
+        return Response({'mensaje': mensaje, "error": True}, status=200)
 
     if url is not None and id_reunion is not None and password is not None and idAsesor is not None:
         regexURL = r'^(https?|ftp):\/\/[^\s\/$.?#].[^\s]*$'
@@ -74,6 +86,11 @@ def registrarDiaHora(request):
     hora_termino = request.data.get('hora_termino')
     modalidad = request.data.get('modalidad')
     idAsesor = request.data.get('idAsesor')
+    token = request.data.get('token')
+
+    valido, mensaje = verificarToken(token)
+    if not valido:
+        return Response({'mensaje': mensaje, "error": True}, status=200)
 
     if dia is not None and hora_inicio is not None and hora_termino is not None and modalidad is not None and idAsesor is not None:
         
@@ -101,6 +118,7 @@ def registrarDiaHora(request):
     else:
         return Response({'mensaje': 'Bad request', "error": True}, status=400)
     
+    
 @api_view(['PUT'])
 def actuaizarHoraDia(request):
     id_dia_hora = request.data.get('idDiaHora')
@@ -111,6 +129,11 @@ def actuaizarHoraDia(request):
     estado = request.data.get('estado')
     es_libre = request.data.get('esLibre')
     id_asesor = request.data.get('idAsesor')
+    token = request.data.get('token')
+
+    valido, mensaje = verificarToken(token)
+    if not valido:
+        return Response({'mensaje': mensaje, "error": True}, status=200)
 
     if id_dia_hora is not None and dia is not None and hora_inicio is not None and hora_termino is not None and modalidad is not None and id_asesor is not None and estado is not None and es_libre is not None:
         
@@ -141,3 +164,30 @@ def actuaizarHoraDia(request):
         return Response({'mensaje': 'Bad request', "error": True}, status=400)
 
 
+@api_view(['DELETE'])
+def eliminarHoraDia(request):
+    id_dia_hora = request.data.get('id_diahora')
+    token = request.data.get('token')
+
+    valido, mensaje = verificarToken(token)
+    if not valido:
+        return Response({'mensaje': mensaje, "error": True}, status=200)
+
+    if id_dia_hora is not None :
+        try:
+            diaHora_eliminar = Diahora.objects.get(id_diahora=id_dia_hora)
+        except ObjectDoesNotExist:
+            return Response({'mensaje': 'Error, no se encontro en la base de datos', "error": True}, status=200)
+        
+
+
+        asesoria = Asesoria.objects.filter(iddiahora=id_dia_hora)
+
+        if asesoria.count() > 0:
+             return Response({'mensaje': 'Error, no se puede eliminar, esta hora esta vinculada a una asesoria', "error": True}, status=200)
+
+        diaHora_eliminar.delete()
+        return Response({'mensaje': 'El dia y hora de la reunion fue eliminada correctamente', "error": False}, status=200)
+
+    else:
+        return Response({'mensaje': 'Bad request', "error": True}, status=400)

@@ -2,6 +2,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import Usuario
 from .serializers import UsuarioSerializer
+from servicioAgenda.authentication import verificarToken
 import re 
 
 @api_view(['POST'])
@@ -11,7 +12,7 @@ def registrarUsuario(request):
     matricula = request.data.get('matricula')
     email = request.data.get('email')
     password = request.data.get('password')
-
+    
     if nombre is not None and matricula is not None and password is not None and email is not None:
         
         regexMatricula = r'S\d{8}'

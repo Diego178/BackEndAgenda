@@ -74,12 +74,6 @@ http://127.0.0.1:8000/api/asesores/registrarDiaHora/
   "idAsesor": 2
 }
 
-//TODO
--agregar hora
--editar hora
--eliminar hora
--obtener horas
--eliminar asesoria
 
 
 http://127.0.0.1:8000/api/asesorias/eliminar/ # No lleva cuerpo
@@ -98,6 +92,16 @@ http://127.0.0.1:8000/api/asesores/actualizarDiaHora/
   "estado": "activo",
   "idAsesor": 2
 }
+
+http://127.0.0.1:8000/api/asesores/eliminarDiaHora/
+
+{
+    "id_diahora": 1
+}
+
+//TODO
+
+-hacer perfil
 
 
 

@@ -5,7 +5,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from .serializers import AsesoriaSerializer
 from utils.validadores import validar_fecha
 from servicioAgenda.email import enviarCorreo
-from utils.validadores import validar_fecha
+from utils.validadores import validar_fecha, obtenerDia
+from servicioAgenda.authentication import verificarToken
 
 import re
 
@@ -26,6 +27,12 @@ def registrarAsesoria(request):
     idAsesor = request.data.get('idAsesor')
     idDiaHora = request.data.get('idDiaHora')
     idUsuario = request.data.get('idUsuario')
+    token = request.data.get('token')
+
+
+    valido, mensaje = verificarToken(token)
+    if not valido:
+        return Response({'mensaje': mensaje, "error": True}, status=200)
 
     if tipo is not None and tema is not None and fecha is not None and idAsesor is not None and idDiaHora is not None and idUsuario is not None:
         if(tipo != 'asesoria' and tipo != 'oral'):
@@ -63,14 +70,30 @@ def registrarAsesoria(request):
 @api_view(['DELETE'])
 def eliminarAsesoria(request):
     # Obtener los datos de la peticion
-    idAsesoria = request.data.get('nombre')
-    matricula = request.data.get('matricula')
-    email = request.data.get('email')
-    password = request.data.get('password')
+    idAsesoria = request.data.get('id_asesoria')
+    token = request.data.get('token')
 
-    enviarCorreo('fabriii', 'afabri24@gmail.com')
+    valido, mensaje = verificarToken(token)
+    if not valido:
+        return Response({'mensaje': mensaje, "error": True}, status=200)
+
+    try:
+        asesoria_eliminar = Asesoria.objects.get(id_asesoria=idAsesoria)
+    except ObjectDoesNotExist:
+        return Response({'mensaje': 'La asesoria que desea eliminar no existe', "error": False}, status=200) 
+
+
+    usuario = Usuario.objects.get(id_usuario=asesoria_eliminar.idusuario.id_usuario)
+ 
+    fecha = asesoria_eliminar.fecha
+    enviarCorreo('Se elimino la asesoria del dia '+ obtenerDia(fecha.day) ,'La asesoria se elimino', usuario.email)
 
     return Response({'mensaje': 'Eliminado correctamente', "error": False}, status=200) 
+
+
+
+
+
 
 
 

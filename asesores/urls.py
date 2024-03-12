@@ -6,4 +6,5 @@ urlpatterns = [
     path('registrarDatosReunion/', views.registrarDatosReunionVirtual),
     path('registrarDiaHora/', views.registrarDiaHora),
     path('actualizarDiaHora/', views.actuaizarHoraDia),
+    path('eliminarDiaHora/', views.eliminarHoraDia),
 ]

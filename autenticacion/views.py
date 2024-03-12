@@ -1,5 +1,7 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+
+from servicioAgenda.authentication import crearToken
 from .models import Usuario, Asesor
 from .serializers import UsuarioSerializer, AsesorSerializer
 
@@ -24,6 +26,7 @@ def login(request):
                 return Response( {
                     'tipo': tipo,
                     'usuario': serializer.data,
+                    'token': crearToken(asesor.id_asesor, tipo),
                     "error": False}, status=200)
         except Asesor.DoesNotExist:
             # Si no se encuentra ningún usuario, devuelve un mensaje de error
@@ -37,6 +40,7 @@ def login(request):
                 return Response( {
                     'tipo': tipo,
                     'usuario': serializer.data,
+                    'token': crearToken(usuario.id_usuario, tipo),
                     "error": False}, status=200)
         except Usuario.DoesNotExist:
             # Si no se encuentra ningún usuario, devuelve un mensaje de error
