@@ -7,4 +7,5 @@ urlpatterns = [
     path('registrarDiaHora/', views.registrarDiaHora),
     path('actualizarDiaHora/', views.actuaizarHoraDia),
     path('eliminarDiaHora/', views.eliminarHoraDia),
+    path('obtenerDatosAsesor/', views.obtenerDatosAsesor),
 ]

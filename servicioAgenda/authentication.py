@@ -75,6 +75,35 @@ def verificarTokenAsesor(token):
         return False, 'El token ha expirado'
     except jwt.InvalidTokenError:
         return False, 'Token inválido'
+    
 
+def verificarTokenUsuario(token):
+    try:
+        # Decodificar el token
+        payload = jwt.decode(token, 'access_secret', algorithms=['HS256'])
 
+        # Verificar la expiración del token
+        fecha_expiracion = datetime.fromtimestamp(payload['exp'])
+        if fecha_expiracion < datetime.now():
+            return False, 'El token ha expirado'
+
+        # Verificar que el user_id sea válido
+        user_id = payload.get('user_id')
+
+        tipo_usuario = payload.get('tipo')
+
+        if tipo_usuario == 'usuario':
+            if not Usuario.objects.filter(id_usuario=user_id).exists():
+                return False, 'No existe el usuario en la BD'
+        else:
+            return False, 'No tienes permisos para realizar esta accion'
+        
+
+        # Si todas las verificaciones pasaron, el token es válido
+        return True, user_id
+
+    except jwt.ExpiredSignatureError:
+        return False, 'El token ha expirado'
+    except jwt.InvalidTokenError:
+        return False, 'Token inválido'
 

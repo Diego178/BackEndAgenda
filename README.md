@@ -102,6 +102,16 @@ http://127.0.0.1:8000/api/asesores/eliminarDiaHora/
 //TODO
 
 -hacer perfil
+-Obtener informacion asesor y usuario
+-Editar la informacion
+
+http://127.0.0.1:8000/api/asesores/obtenerDatosAsesor/
+
+{
+    "idAsesor": 1,
+    "token":  "XXXXXXXXX"
+}
+
 
 
 

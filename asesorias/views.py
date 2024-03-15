@@ -1,21 +1,96 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .models import Asesoria, Asesor, Diahora, Usuario
+from .models import Asesoria, Asesor, Diahora, Usuario, Datosreunionvirtual
 from django.core.exceptions import ObjectDoesNotExist
 from .serializers import AsesoriaSerializer
 from utils.validadores import validar_fecha
 from servicioAgenda.email import enviarCorreo
 from utils.validadores import validar_fecha, obtenerDia
-from servicioAgenda.authentication import verificarToken
+from servicioAgenda.authentication import verificarToken, verificarTokenAsesor, verificarTokenUsuario
 
-import re
 
-@api_view(['GET'])
-def obtenerAsesoriasAsesor(request, id):
+@api_view(['POST'])
+def obtenerAsesoriasAsesor(request):
     # Obtener los datos de la peticion
-    asesorias = Asesoria.objects.filter(idasesor=id)
-    serializer = AsesoriaSerializer(asesorias, many=True)
-    return Response(serializer.data, status=200)
+    token = request.data.get('token')
+
+    valido, mensaje = verificarTokenAsesor(token)
+    if not valido:
+        return Response({'mensaje': mensaje, "error": True}, status=200)
+    
+    asesorias = Asesoria.objects.filter(idasesor=mensaje)
+    data = []
+    for asesoria in asesorias:
+        if asesoria.tipo == 'virtual':
+            datos_reunion = Datosreunionvirtual.objects.get(idasesor=asesoria.idasesor)
+            asesoria_data = {
+                'id_asesoria': asesoria.id_asesoria,
+                'tipo': asesoria.tipo,
+                'nombre_usuario': asesoria.idusuario.nombre,
+                'fecha': asesoria.fecha,
+                'dia': asesoria.iddiahora.dia,
+                'hora_inicio': asesoria.iddiahora.hora_inicio,
+                'hora_termino': asesoria.iddiahora.hora_termino,
+                'password_reunion': datos_reunion.password,
+                'url_reunion': datos_reunion.url,
+                'id_reunion': datos_reunion.id_reunion
+            }
+            data.append(asesoria_data)
+        else:
+            asesoria_data = {
+                'id_asesoria': asesoria.id_asesoria,
+                'tipo': asesoria.tipo,
+                'nombre_usuario': asesoria.idusuario.nombre,
+                'fecha': asesoria.fecha,
+                'dia': asesoria.iddiahora.dia,
+                'hora_inicio': asesoria.iddiahora.hora_inicio,
+                'hora_termino': asesoria.iddiahora.hora_termino
+            }
+            data.append(asesoria_data)
+
+    return Response(data, status=200)
+
+
+@api_view(['POST'])
+def obtenerAsesoriasUsuario(request):
+    # Obtener los datos de la peticion
+    token = request.data.get('token')
+
+    valido, mensaje = verificarTokenUsuario(token)
+    if not valido:
+        return Response({'mensaje': mensaje, "error": True}, status=200)
+    
+    asesorias = Asesoria.objects.filter(idusuario=mensaje)
+    data = []
+    for asesoria in asesorias:
+        if asesoria.tipo == 'virtual':
+            datos_reunion = Datosreunionvirtual.objects.get(idasesor=asesoria.idasesor)
+            asesoria_data = {
+                'id_asesoria': asesoria.id_asesoria,
+                'tipo': asesoria.tipo,
+                'nombre_asesor': asesoria.idasesor.nombre,
+                'fecha': asesoria.fecha,
+                'dia': asesoria.iddiahora.dia,
+                'hora_inicio': asesoria.iddiahora.hora_inicio,
+                'hora_termino': asesoria.iddiahora.hora_termino,
+                'password_reunion': datos_reunion.password,
+                'url_reunion': datos_reunion.url,
+                'id_reunion': datos_reunion.id_reunion
+            }
+            data.append(asesoria_data)
+        else:
+            asesoria_data = {
+                'id_asesoria': asesoria.id_asesoria,
+                'tipo': asesoria.tipo,
+                'nombre_asesor': asesoria.idasesor.nombre,
+                'fecha': asesoria.fecha,
+                'dia': asesoria.iddiahora.dia,
+                'hora_inicio': asesoria.iddiahora.hora_inicio,
+                'hora_termino': asesoria.iddiahora.hora_termino
+            }
+            data.append(asesoria_data)
+
+    return Response(data, status=200)
 
 
 @api_view(['POST'])

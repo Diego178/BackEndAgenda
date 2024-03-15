@@ -4,6 +4,7 @@ from .models import Asesor, Datosreunionvirtual, Diahora, Asesoria
 from utils.validadores import es_dia_semana, es_hora_valida, es_valido_modalidad
 from django.core.exceptions import ObjectDoesNotExist
 from servicioAgenda.authentication import verificarTokenAsesor, verificarToken
+from.serializers import AsesorSerializer
 import re 
 
 @api_view(['POST'])
@@ -191,3 +192,21 @@ def eliminarHoraDia(request):
 
     else:
         return Response({'mensaje': 'Bad request', "error": True}, status=400)
+
+@api_view(['POST'])
+def obtenerDatosAsesor(request):
+    id_asesor = request.data.get('idAsesor')
+    token = request.data.get('token')
+
+    valido, mensaje = verificarTokenAsesor(token)
+    if not valido:
+        return Response({'mensaje': mensaje, "error": True}, status=200)
+    
+    asesor = Asesor.objects.get(id_asesor=id_asesor)
+
+    serializer = AsesorSerializer(asesor)
+
+    return Response({'mensaje': serializer.data, "error": True}, status=200)
+
+
+
