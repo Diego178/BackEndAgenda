@@ -1,7 +1,7 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import Asesor, Datosreunionvirtual, Diahora, Asesoria
-from utils.validadores import es_dia_semana, es_hora_valida, es_valido_modalidad
+from utils.validadores import es_dia_semana, es_hora_valida, es_valido_email, es_valido_modalidad, es_valido_password
 from django.core.exceptions import ObjectDoesNotExist
 from servicioAgenda.authentication import verificarTokenAsesor, verificarToken
 from.serializers import AsesorSerializer
@@ -207,6 +207,39 @@ def obtenerDatosAsesor(request):
     serializer = AsesorSerializer(asesor)
 
     return Response({'mensaje': serializer.data, "error": True}, status=200)
+
+@api_view(['PUT'])
+def actualizarAsesor(request):
+    nombre = request.data.get('nombre')
+    idioma = request.data.get('idioma')
+    email = request.data.get('email')
+    password = request.data.get('password')
+    token = request.data.get('token')
+
+    valido, mensaje = verificarTokenAsesor(token)
+    if not valido:
+        return Response({'mensaje': mensaje, "error": True}, status=200)
+
+    if nombre is not None and password is not None and email is not None and idioma is not None:
+
+        if not es_valido_email(email):
+            return Response({'mensaje': 'Correo ingresado no valido.', "error": True}, status=200)
+        
+        if not es_valido_password(password):
+            return Response({'mensaje': 'La contrasena no cumple los requisitos para que sea valida.', "error": True}, status=200)
+        
+
+        nuevo_asesor = Asesor(id_asesor=mensaje, password=password, email=email, nombre=nombre, idioma=idioma)
+
+        nuevo_asesor.save()
+   
+        return Response({'mensaje': 'Los datos del usuario fueron actualizados correctamente', "error": False}, status=200)
+
+    else:
+        return Response({'mensaje': 'Bad request', "error": True}, status=400)
+
+
+
 
 
 

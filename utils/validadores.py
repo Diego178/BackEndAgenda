@@ -1,4 +1,5 @@
 from datetime import datetime
+import re
 
 def es_dia_semana(dia):
     dias_semana = {
@@ -54,3 +55,27 @@ def validar_tipo_usuario(tipo):
         if tipo_usuario == tipo:
             return True, tipo
     return False
+
+def es_valido_email(email):
+    regexEmail = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
+    if re.match(regexEmail, email):
+            return True
+    return False
+        
+def es_valido_password(password):
+    regexPassword = r'^.{8,16}$'
+    if re.match(regexPassword, password):
+            return True
+    return False
+
+def es_valido_matricula(matricula):
+    regexMatricula = r'S\d{8}'
+    if re.match(regexMatricula, matricula):
+            return True
+    return False
+
+
+
+        
+
+

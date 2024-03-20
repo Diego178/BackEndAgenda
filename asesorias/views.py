@@ -2,8 +2,8 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import Asesoria, Asesor, Diahora, Usuario, Datosreunionvirtual
 from django.core.exceptions import ObjectDoesNotExist
-from .serializers import AsesoriaSerializer
-from utils.validadores import validar_fecha
+from .serializers import DiaHoraSerializer
+from utils.validadores import es_dia_semana, validar_fecha
 from servicioAgenda.email import enviarCorreo
 from utils.validadores import validar_fecha, obtenerDia
 from servicioAgenda.authentication import verificarToken, verificarTokenAsesor, verificarTokenUsuario
@@ -165,7 +165,24 @@ def eliminarAsesoria(request):
 
     return Response({'mensaje': 'Eliminado correctamente', "error": False}, status=200) 
 
+@api_view(['POST'])
+def obtenerHorariosByAsesor(request):
+    dia = request.data.get('dia')
+    token = request.data.get('token')
 
+    valido, mensaje = verificarTokenAsesor(token)
+    if not valido:
+        return Response({'mensaje': mensaje, "error": True}, status=200)
+    
+    if not es_dia_semana(dia):
+             return Response({'mensaje': 'Error, el dia se la semana no es valido.', "error": False}, status=200)
+        
+
+    horarios = Diahora.objects.filter(idasesor=mensaje, dia=dia)
+
+    serializer = DiaHoraSerializer(horarios, many=True)
+
+    return Response({'mensaje': serializer.data, "error": False}, status=200)
 
 
 

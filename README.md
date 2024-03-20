@@ -101,9 +101,9 @@ http://127.0.0.1:8000/api/asesores/eliminarDiaHora/
 
 //TODO
 
--hacer perfil
--Obtener informacion asesor y usuario
 -Editar la informacion
+-registrar, editar, eliminar asesoria
+-eliminar diahora
 
 http://127.0.0.1:8000/api/asesores/obtenerDatosAsesor/
 
@@ -112,6 +112,12 @@ http://127.0.0.1:8000/api/asesores/obtenerDatosAsesor/
     "token":  "XXXXXXXXX"
 }
 
+http://127.0.0.1:8000/api/asesorias/obtenerHorariosByAsesor/
+
+{
+    "dia": "lunes",
+    "token":  "XXXXXXXXX"
+}
 
 
 

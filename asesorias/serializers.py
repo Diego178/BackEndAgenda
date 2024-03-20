@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Asesoria, Datosreunionvirtual
+from .models import Asesoria, Datosreunionvirtual, Diahora
 
 class DatosReunionVirtualSerializer(serializers.ModelSerializer):
     class Meta:
@@ -12,4 +12,10 @@ class AsesoriaSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Asesoria
+        fields = '__all__'
+
+class DiaHoraSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Diahora
         fields = '__all__'

@@ -1,8 +1,11 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+
+from utils.validadores import es_valido_email, es_valido_matricula, es_valido_password
 from .models import Usuario
 from .serializers import UsuarioSerializer
-from servicioAgenda.authentication import verificarToken
+from servicioAgenda.authentication import verificarTokenUsuario
+from django.core.exceptions import ObjectDoesNotExist
 import re 
 
 @api_view(['POST'])
@@ -15,17 +18,13 @@ def registrarUsuario(request):
     
     if nombre is not None and matricula is not None and password is not None and email is not None:
         
-        regexMatricula = r'S\d{8}'
-        regexEmail = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
-        regexPassword = r'^.{8,16}$'
-
-        if not re.match(regexMatricula, matricula):
+        if not es_valido_matricula(matricula):
             return Response({'mensaje': 'La matricula no cumple los requisitos para que sea valida.', "error": True}, status=200)
         
-        if not re.match(regexEmail, email):
+        if not es_valido_email(email):
             return Response({'mensaje': 'Correo ingresado no valido.', "error": True}, status=200)
         
-        if not re.match(regexPassword, password):
+        if not es_valido_password(password):
             return Response({'mensaje': 'La contrasena no cumple los requisitos para que sea valida.', "error": True}, status=200)
         
         if Usuario.objects.filter(email=email).exists():
@@ -41,3 +40,37 @@ def registrarUsuario(request):
         return Response({'mensaje': 'El usuario fue registrado correctamente.', "error": False}, status=200)  
     else:
         return Response({'mensaje': 'Bad request', "error": True}, status=400) 
+    
+@api_view(['PUT'])
+def actualizarUsuario(request):
+    nombre = request.data.get('nombre')
+    password = request.data.get('password')
+    email = request.data.get('email')
+    matricula = request.data.get('matricula')
+    token = request.data.get('token')
+
+
+    valido, mensaje = verificarTokenUsuario(token)
+    if not valido:
+        return Response({'mensaje': mensaje, "error": True}, status=200)
+
+    if nombre is not None and password is not None and email is not None and matricula is not None:
+
+        if not es_valido_email(email):
+            return Response({'mensaje': 'Correo ingresado no valido.', "error": True}, status=200)
+        
+        if not es_valido_password(password):
+            return Response({'mensaje': 'La contrasena no cumple los requisitos para que sea valida.', "error": True}, status=200)
+        
+        if not es_valido_matricula(matricula):
+            return Response({'mensaje': 'La matricula no cumple los requisitos para que sea valida.', "error": True}, status=200)
+        
+
+        nuevo_usuario = Usuario(id_usuario=mensaje, password=password, email=email, nombre=nombre, matricula=matricula)
+
+        nuevo_usuario.save()
+   
+        return Response({'mensaje': 'Los datos del usuario fueron actualizados correctamente', "error": False}, status=200)
+
+    else:
+        return Response({'mensaje': 'Bad request', "error": True}, status=400)
