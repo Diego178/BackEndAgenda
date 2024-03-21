@@ -138,7 +138,7 @@ def registrarAsesoria(request):
 
         nueva_asesoria.save()
    
-        return Response({'mensaje': 'El usuario fue registrado correctamente', "error": False}, status=200)  
+        return Response({'mensaje': 'La asesoria fue registrada correctamente', "error": False}, status=200)  
     else:
         return Response({'mensaje': 'Bad request', "error": True}, status=400) 
     
@@ -148,7 +148,7 @@ def eliminarAsesoria(request):
     idAsesoria = request.data.get('id_asesoria')
     token = request.data.get('token')
 
-    valido, mensaje = verificarToken(token)
+    valido, mensaje, tipo = verificarToken(token)
     if not valido:
         return Response({'mensaje': mensaje, "error": True}, status=200)
 
@@ -157,11 +157,16 @@ def eliminarAsesoria(request):
     except ObjectDoesNotExist:
         return Response({'mensaje': 'La asesoria que desea eliminar no existe', "error": False}, status=200) 
 
-
-    usuario = Usuario.objects.get(id_usuario=asesoria_eliminar.idusuario.id_usuario)
- 
     fecha = asesoria_eliminar.fecha
-    enviarCorreo('Se elimino la asesoria del dia '+ obtenerDia(fecha.day) ,'La asesoria se elimino', usuario.email)
+    if(tipo == 'usuario'):
+        usuario = Usuario.objects.get(id_usuario=asesoria_eliminar.idusuario.id_usuario)
+        enviarCorreo('Hola, el usuario ' + usuario.nombre + ' ha eliminado la asesoria del dia '+ obtenerDia(fecha.day) ,'La asesoria se elimino', usuario.email)
+    else:
+        asesor = Asesor.objects.get(id_asesor=asesoria_eliminar.idasesor.id_asesor)
+        enviarCorreo('Hola, el asesor ' + asesor.nombre + ' ha eliminado la asesoria del dia '+ obtenerDia(fecha.day) ,'La asesoria se elimino', asesor.email)
+ 
+    asesoria_eliminar.delete()
+    
 
     return Response({'mensaje': 'Eliminado correctamente', "error": False}, status=200) 
 
@@ -183,15 +188,6 @@ def obtenerHorariosByAsesor(request):
     serializer = DiaHoraSerializer(horarios, many=True)
 
     return Response({'mensaje': serializer.data, "error": False}, status=200)
-
-
-
-
-
-
-
-
-
 
 
 

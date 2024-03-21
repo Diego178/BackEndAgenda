@@ -170,7 +170,7 @@ def eliminarHoraDia(request):
     id_dia_hora = request.data.get('id_diahora')
     token = request.data.get('token')
 
-    valido, mensaje = verificarToken(token)
+    valido, mensaje = verificarTokenAsesor(token)
     if not valido:
         return Response({'mensaje': mensaje, "error": True}, status=200)
 
@@ -185,7 +185,7 @@ def eliminarHoraDia(request):
         asesoria = Asesoria.objects.filter(iddiahora=id_dia_hora)
 
         if asesoria.count() > 0:
-             return Response({'mensaje': 'Error, no se puede eliminar, esta hora esta vinculada a una asesoria', "error": True}, status=200)
+             return Response({'mensaje': 'Error, no se puede eliminar, ya que esta hora esta vinculada a una asesoria activa, por favor eliminala antes.', "error": True}, status=200)
 
         diaHora_eliminar.delete()
         return Response({'mensaje': 'El dia y hora de la reunion fue eliminada correctamente', "error": False}, status=200)
