@@ -70,6 +70,7 @@ def obtenerAsesoriasUsuario(request):
                 'tipo': asesoria.tipo,
                 'nombre_asesor': asesoria.idasesor.nombre,
                 'fecha': asesoria.fecha,
+                'tema': asesoria.tema,
                 'dia': asesoria.iddiahora.dia,
                 'hora_inicio': asesoria.iddiahora.hora_inicio,
                 'hora_termino': asesoria.iddiahora.hora_termino,
@@ -84,6 +85,7 @@ def obtenerAsesoriasUsuario(request):
                 'tipo': asesoria.tipo,
                 'nombre_asesor': asesoria.idasesor.nombre,
                 'fecha': asesoria.fecha,
+                'tema': asesoria.tema,
                 'dia': asesoria.iddiahora.dia,
                 'hora_inicio': asesoria.iddiahora.hora_inicio,
                 'hora_termino': asesoria.iddiahora.hora_termino

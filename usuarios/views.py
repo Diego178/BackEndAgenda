@@ -74,3 +74,6 @@ def actualizarUsuario(request):
 
     else:
         return Response({'mensaje': 'Bad request', "error": True}, status=400)
+    
+
+    

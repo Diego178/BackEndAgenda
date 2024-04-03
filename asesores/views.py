@@ -22,13 +22,12 @@ def registrarAsesor(request):
 
     if nombre is not None and idioma is not None and password is not None and email is not None:
 
-        regexEmail = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
-        regexPassword = r'^.{8,16}$'
+    
 
-        if not re.match(regexEmail, email):
+        if not es_valido_email(email):
             return Response({'mensaje': 'Correo ingresado no valido', "error": True}, status=200)
         
-        if not re.match(regexPassword, password):
+        if not es_valido_password(password):
             return Response({'mensaje': 'La contrasena no cumple los requisitos para que sea valida', "error": True}, status=200)
 
         if Asesor.objects.filter(email=email).exists():
