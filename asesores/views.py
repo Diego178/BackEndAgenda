@@ -100,13 +100,13 @@ def registrarDiaHora(request):
         
 
         if not es_dia_semana(dia):
-             return Response({'mensaje': 'Error, el dia se la semana no es valido.', "error": False}, status=200)
+             return Response({'mensaje': 'Error, el dia se la semana no es valido.', "error": True}, status=200)
         
         if not es_hora_valida(hora_inicio):
-             return Response({'mensaje': 'Error, la hora de inicio no es valida.', "error": False}, status=200)
+             return Response({'mensaje': 'Error, la hora de inicio no es valida.', "error": True}, status=200)
         
         if not es_hora_valida(hora_termino):
-             return Response({'mensaje': 'Error, la hora de termino no es valida.', "error": False}, status=200)
+             return Response({'mensaje': 'Error, la hora de termino no es valida.', "error": True}, status=200)
             
         nuevo_datos = Diahora(dia=dia, hora_inicio=hora_inicio, hora_termino=hora_termino, modalidad=modalidad, idasesor=asesor, eslibre=True, estado="disponible")
 
@@ -130,7 +130,7 @@ def actuaizarHoraDia(request):
     id_asesor = request.data.get('idAsesor')
     token = request.data.get('token')
 
-    valido, mensaje = verificarToken(token)
+    valido, mensaje = verificarTokenAsesor(token)
     if not valido:
         return Response({'mensaje': mensaje, "error": True}, status=200)
 
