@@ -120,5 +120,12 @@ http://127.0.0.1:8000/api/asesorias/obtenerHorariosByAsesor/
 }
 
 
+modificar agregar dia hora
+ver los tokens en frontend
+
+agregar 2 horitas
+
+
+
 
 

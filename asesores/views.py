@@ -85,17 +85,16 @@ def registrarDiaHora(request):
     hora_inicio = request.data.get('hora_inicio')
     hora_termino = request.data.get('hora_termino')
     modalidad = request.data.get('modalidad')
-    idAsesor = request.data.get('idAsesor')
     token = request.data.get('token')
 
-    valido, mensaje = verificarToken(token)
+    valido, mensaje = verificarTokenAsesor(token)
     if not valido:
         return Response({'mensaje': mensaje, "error": True}, status=200)
 
-    if dia is not None and hora_inicio is not None and hora_termino is not None and modalidad is not None and idAsesor is not None:
+    if dia is not None and hora_inicio is not None and hora_termino is not None and modalidad is not None:
         
         try:
-            asesor = Asesor.objects.get(id_asesor=idAsesor)
+            asesor = Asesor.objects.get(id_asesor=mensaje)
         except ObjectDoesNotExist:
             return Response({'mensaje': 'Error, el asesor no existe en la base de datos.', "error": True}, status=200)
         
