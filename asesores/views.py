@@ -1,10 +1,10 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .models import Asesor, Datosreunionvirtual, Diahora, Asesoria
+from .models import Asesor, Datosreunionvirtual, Diahora, Asesoria, Curso
 from utils.validadores import es_dia_semana, es_hora_valida, es_valido_email, es_valido_modalidad, es_valido_password
 from django.core.exceptions import ObjectDoesNotExist
-from servicioAgenda.authentication import verificarTokenAsesor, verificarToken
-from.serializers import AsesorSerializer
+from servicioAgenda.authentication import verificarTokenAsesor, verificarToken, verificarTokenUsuario
+from.serializers import AsesorSerializer, CursoSerializer
 import re 
 
 @api_view(['POST'])
@@ -192,14 +192,13 @@ def eliminarHoraDia(request):
 
 @api_view(['POST'])
 def obtenerDatosAsesor(request):
-    id_asesor = request.data.get('idAsesor')
     token = request.data.get('token')
 
     valido, mensaje = verificarTokenAsesor(token)
     if not valido:
         return Response({'mensaje': mensaje, "error": True}, status=200)
     
-    asesor = Asesor.objects.get(id_asesor=id_asesor)
+    asesor = Asesor.objects.get(id_asesor=mensaje)
 
     serializer = AsesorSerializer(asesor)
 
@@ -235,7 +234,22 @@ def actualizarAsesor(request):
     else:
         return Response({'mensaje': 'Bad request', "error": True}, status=400)
 
+@api_view(['POST'])
+def obtenerCursosAsesor(request):
+    token = request.data.get('token')
+    idAsesor = request.data.get('idAsesor')
 
+    valido, mensaje = verificarTokenUsuario(token)
+    if not valido:
+        return Response({'mensaje': mensaje, "error": True}, status=200)
+    
+    asesor = Asesor.objects.get(id_asesor=idAsesor)
+
+    cursos = Curso.objects.filter(idasesor=asesor)
+
+    serializer = CursoSerializer(cursos, many=True)
+
+    return Response({'mensaje': serializer.data, "error": False}, status=200)
 
 
 

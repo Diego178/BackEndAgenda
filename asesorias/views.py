@@ -191,6 +191,35 @@ def obtenerHorariosByAsesor(request):
 
     return Response({'mensaje': serializer.data, "error": False}, status=200)
 
+@api_view(['POST'])
+def obtenerHorariosByDia(request):
+    dia = request.data.get('dia')
+    modalidad = request.data.get('modalidad')
+    idAsesor = request.data.get('idAsesor')
+    token = request.data.get('token')
+
+    valido, mensaje = verificarTokenUsuario(token)
+    if not valido:
+        return Response({'mensaje': mensaje, "error": True}, status=200)
+    
+    if not es_dia_semana(dia):
+             return Response({'mensaje': 'Error, el dia se la semana no es valido.', "error": False}, status=200)
+    
+    horarios = Diahora.objects.filter(idasesor=idAsesor, dia=dia, modalidad=modalidad, eslibre=1)
+    
+    data = []
+    
+    for hora in horarios:
+        hora_data = {
+            'idDiaHora': hora.id_diahora,
+            "hora": hora.hora_inicio.strftime("%H:%M") + " a " + hora.hora_termino.strftime("%H:%M")
+        }
+        data.append(hora_data)
+
+
+
+    return Response({'mensaje': data, "error": False}, status=200)
+
 
 
 

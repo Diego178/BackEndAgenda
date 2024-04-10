@@ -57,3 +57,12 @@ class Asesoria(models.Model):
     class Meta:
         managed = False
         db_table = 'asesoria'
+
+class Curso(models.Model):
+    id_curso = models.AutoField(primary_key=True)
+    nombrecurso = models.CharField(db_column='nombreCurso', max_length=20, blank=True, null=True)  # Field name made lowercase.
+    idasesor = models.ForeignKey(Asesor, models.CASCADE, db_column='idAsesor', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'curso'

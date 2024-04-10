@@ -8,4 +8,5 @@ urlpatterns = [
     path('actualizarDiaHora/', views.actuaizarHoraDia),
     path('eliminarDiaHora/', views.eliminarHoraDia),
     path('obtenerDatosAsesor/', views.obtenerDatosAsesor),
+    path('obtenerCursos/', views.obtenerCursosAsesor),
 ]

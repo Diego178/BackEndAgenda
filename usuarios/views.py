@@ -75,5 +75,17 @@ def actualizarUsuario(request):
     else:
         return Response({'mensaje': 'Bad request', "error": True}, status=400)
     
+@api_view(['POST'])
+def obtenerDatosUsuario(request):
+    token = request.data.get('token')
 
+    valido, mensaje = verificarTokenUsuario(token)
+    if not valido:
+        return Response({'mensaje': mensaje, "error": True}, status=200)
+    
+    usuario = Usuario.objects.get(id_usuario=mensaje)
+
+    serializer = UsuarioSerializer(usuario)
+
+    return Response({'mensaje': serializer.data, "error": True}, status=200)
     
