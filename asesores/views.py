@@ -108,7 +108,7 @@ def registrarDiaHora(request):
         if not es_hora_valida(hora_termino):
              return Response({'mensaje': 'Error, la hora de termino no es valida.', "error": True}, status=200)
             
-        nuevo_datos = Diahora(dia=dia, hora_inicio=hora_inicio, hora_termino=hora_termino, modalidad=modalidad, idasesor=asesor, eslibre=True, estado="disponible")
+        nuevo_datos = Diahora(dia=dia, hora_inicio=hora_inicio, hora_termino=hora_termino, modalidad=modalidad, idasesor=asesor, eslibre=True, estado="activo")
 
         nuevo_datos.save()
    
@@ -127,17 +127,16 @@ def actuaizarHoraDia(request):
     modalidad = request.data.get('modalidad')
     estado = request.data.get('estado')
     es_libre = request.data.get('esLibre')
-    id_asesor = request.data.get('idAsesor')
     token = request.data.get('token')
 
     valido, mensaje = verificarTokenAsesor(token)
     if not valido:
         return Response({'mensaje': mensaje, "error": True}, status=200)
 
-    if id_dia_hora is not None and dia is not None and hora_inicio is not None and hora_termino is not None and modalidad is not None and id_asesor is not None and estado is not None and es_libre is not None:
+    if id_dia_hora is not None and dia is not None and hora_inicio is not None and hora_termino is not None and modalidad is not None and estado is not None and es_libre is not None:
         
         try:
-            asesor = Asesor.objects.get(id_asesor=id_asesor)
+            asesor = Asesor.objects.get(id_asesor=mensaje)
         except ObjectDoesNotExist:
             return Response({'mensaje': 'Error, el asesor no existe en la base de datos.', "error": True}, status=200)
         
