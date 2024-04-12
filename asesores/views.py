@@ -121,27 +121,22 @@ def registrarDiaHora(request):
 @api_view(['PUT'])
 def actuaizarHoraDia(request):
     id_dia_hora = request.data.get('idDiaHora')
-    dia = request.data.get('dia')
     hora_inicio = request.data.get('hora_inicio')
     hora_termino = request.data.get('hora_termino')
     modalidad = request.data.get('modalidad')
     estado = request.data.get('estado')
-    es_libre = request.data.get('esLibre')
     token = request.data.get('token')
 
     valido, mensaje = verificarTokenAsesor(token)
     if not valido:
         return Response({'mensaje': mensaje, "error": True}, status=200)
 
-    if id_dia_hora is not None and dia is not None and hora_inicio is not None and hora_termino is not None and modalidad is not None and estado is not None and es_libre is not None:
+    if id_dia_hora is not None and hora_inicio is not None and hora_termino is not None and modalidad is not None and estado is not None:
         
         try:
             asesor = Asesor.objects.get(id_asesor=mensaje)
         except ObjectDoesNotExist:
             return Response({'mensaje': 'Error, el asesor no existe en la base de datos.', "error": True}, status=200)
-        
-        if not es_dia_semana(dia):
-             return Response({'mensaje': 'Error, el dia se la semana no es valido.', "error": False}, status=200)
         
         if not es_hora_valida(hora_inicio):
              return Response({'mensaje': 'Error, la hora de inicio no es valida.', "error": False}, status=200)
@@ -152,11 +147,20 @@ def actuaizarHoraDia(request):
         if not es_valido_modalidad(modalidad):
              return Response({'mensaje': 'Error, la modalidad no es valida.', "error": False}, status=200)
         
-        nuevo_datos = Diahora(id_diahora=id_dia_hora, dia=dia, hora_inicio=hora_inicio, hora_termino=hora_termino, modalidad=modalidad, idasesor=asesor, eslibre=es_libre, estado=estado)
+        try:
+            # Recuperar el objeto Diahora existente
+            dia_hora_existente = Diahora.objects.get(id_diahora=id_dia_hora)
+        except Diahora.DoesNotExist:
+            return Response({'mensaje': 'Error, el Diahora no existe en la base de datos.', "error": True}, status=200)
+
+        if dia_hora_existente.eslibre == 0:
+            return Response({'mensaje': 'No se puede guardar la informacion ya que la hora no se encuentra libre, si desea cambiar la informacion elimine la asesoria antes', "error": True}, status=200)
+        
+        nuevo_datos = Diahora(id_diahora=id_dia_hora, hora_inicio=hora_inicio, hora_termino=hora_termino, eslibre=dia_hora_existente.eslibre, dia=dia_hora_existente.dia, modalidad=modalidad, idasesor=asesor, estado=estado)
 
         nuevo_datos.save()
    
-        return Response({'mensaje': 'Los datos de la reunion fueron actualizados correctamente', "error": False}, status=200)
+        return Response({'mensaje': 'Los datos del horario fueron actualizados correctamente', "error": False}, status=200)
 
     else:
         return Response({'mensaje': 'Bad request', "error": True}, status=400)
@@ -202,7 +206,7 @@ def obtenerDatosAsesor(request):
 
     serializer = AsesorSerializer(asesor)
 
-    return Response({'mensaje': serializer.data, "error": True}, status=200)
+    return Response({'mensaje': serializer.data, "error": False}, status=200)
 
 @api_view(['PUT'])
 def actualizarAsesor(request):
