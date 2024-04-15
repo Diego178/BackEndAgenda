@@ -26,6 +26,7 @@ def obtenerAsesoriasAsesor(request):
             asesoria_data = {
                 'id_asesoria': asesoria.id_asesoria,
                 'tipo': asesoria.tipo,
+                'tema': asesoria.tema,
                 'nombre_usuario': asesoria.idusuario.nombre,
                 'fecha': asesoria.fecha,
                 'dia': asesoria.iddiahora.dia,
@@ -135,6 +136,11 @@ def registrarAsesoria(request):
         except ObjectDoesNotExist:
             return Response({'mensaje': 'Error, el usuario no existe en la base de datos.', "error": True}, status=200)
         
+        
+        enviarCorreo('Hola, ' + asesor.nombre + ' el usuario '+ usuario.nombre + ' ha agregado una nueva asesoria para la fecha ' +  fecha ,'Asesoria nueva', asesor.email)
+
+        diaHora.eslibre = 0;
+        diaHora.save()
         nueva_asesoria = Asesoria(tipo=tipo, tema=tema, fecha=fecha, idasesor=asesor, iddiahora= diaHora, idusuario=usuario)
 
         nueva_asesoria.save()
@@ -149,7 +155,7 @@ def eliminarAsesoria(request):
     idAsesoria = request.data.get('id_asesoria')
     token = request.data.get('token')
 
-    valido, mensaje, tipo = verificarToken(token)
+    valido, mensaje = verificarTokenUsuario(token)
     if not valido:
         return Response({'mensaje': mensaje, "error": True}, status=200)
 
@@ -159,13 +165,18 @@ def eliminarAsesoria(request):
         return Response({'mensaje': 'La asesoria que desea eliminar no existe', "error": False}, status=200) 
 
     fecha = asesoria_eliminar.fecha
-    if(tipo == 'usuario'):
-        usuario = Usuario.objects.get(id_usuario=asesoria_eliminar.idusuario.id_usuario)
-        enviarCorreo('Hola, el usuario ' + usuario.nombre + ' ha eliminado la asesoria del dia '+ obtenerDia(fecha.day) ,'La asesoria se elimino', usuario.email)
-    else:
-        asesor = Asesor.objects.get(id_asesor=asesoria_eliminar.idasesor.id_asesor)
-        enviarCorreo('Hola, el asesor ' + asesor.nombre + ' ha eliminado la asesoria del dia '+ obtenerDia(fecha.day) ,'La asesoria se elimino', asesor.email)
- 
+
+    usuario = Usuario.objects.get(id_usuario=mensaje)
+
+    enviarCorreo('Hola, el usuario ' + usuario.nombre + ' ha cancelado la asesoria de la fecha '+ str(fecha), 'Una asesoria se cancelo', asesoria_eliminar.idasesor.email)
+
+    try:
+        diaHora= Diahora.objects.get(id_diahora=asesoria_eliminar.iddiahora.id_diahora)
+    except ObjectDoesNotExist:
+        return Response({'mensaje': 'Error, el horario elegido no existe en la base de datos.', "error": True}, status=200)
+        
+    diaHora.eslibre = 1;
+    diaHora.save()
     asesoria_eliminar.delete()
     
 

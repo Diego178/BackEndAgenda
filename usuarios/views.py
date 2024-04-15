@@ -87,5 +87,5 @@ def obtenerDatosUsuario(request):
 
     serializer = UsuarioSerializer(usuario)
 
-    return Response({'mensaje': serializer.data, "error": True}, status=200)
+    return Response({'mensaje': serializer.data, "error": False}, status=200)
     
