@@ -254,6 +254,32 @@ def obtenerCursosAsesor(request):
 
     return Response({'mensaje': serializer.data, "error": False}, status=200)
 
+@api_view(['POST'])
+def registrarCurso(request):
+    token = request.data.get('token')
+    nombre = request.data.get('nombre')
+
+    valido, mensaje = verificarTokenAsesor(token)
+    if not valido:
+        return Response({'mensaje': mensaje, "error": True}, status=200)
+    
+    if nombre is not None:
+
+        try:
+            asesor = Asesor.objects.get(id_asesor=mensaje)
+        except ObjectDoesNotExist:
+            return Response({'mensaje': 'Error, el asesor no existe en la base de datos.', "error": True}, status=200)
+        
+
+        nuevo_datos = Curso(nombre=nombre, idasesor=asesor)
+
+        nuevo_datos.save()
+   
+        return Response({'mensaje': 'Los datos del curso fueron registrados correctamente', "error": False}, status=200)
+
+    else:
+        return Response({'mensaje': 'Bad request', "error": True}, status=400)
+
 
 
 

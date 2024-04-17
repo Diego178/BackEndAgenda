@@ -126,7 +126,7 @@ ver los tokens en frontend
 agregar 2 horitas
 
 
-hacer q cuando se registre cambie el estado de eslibre en dia hora
+
 poner seguridad a todo (quitar consoleslogs, passwords encriptadas)
 acabar los estilos
 terminar los modales
