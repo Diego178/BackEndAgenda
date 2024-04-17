@@ -241,13 +241,12 @@ def actualizarAsesor(request):
 @api_view(['POST'])
 def obtenerCursosAsesor(request):
     token = request.data.get('token')
-    idAsesor = request.data.get('idAsesor')
 
-    valido, mensaje = verificarTokenUsuario(token)
+    valido, mensaje = verificarTokenAsesor(token)
     if not valido:
         return Response({'mensaje': mensaje, "error": True}, status=200)
     
-    asesor = Asesor.objects.get(id_asesor=idAsesor)
+    asesor = Asesor.objects.get(id_asesor=mensaje)
 
     cursos = Curso.objects.filter(idasesor=asesor)
 
