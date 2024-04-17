@@ -1,6 +1,8 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
+from asesores.models import Asesor, Curso
+from asesores.serializers import CursoSerializer
 from utils.validadores import es_valido_email, es_valido_matricula, es_valido_password
 from .models import Usuario
 from .serializers import UsuarioSerializer
@@ -86,6 +88,23 @@ def obtenerDatosUsuario(request):
     usuario = Usuario.objects.get(id_usuario=mensaje)
 
     serializer = UsuarioSerializer(usuario)
+
+    return Response({'mensaje': serializer.data, "error": False}, status=200)
+
+@api_view(['POST'])
+def obtenerCursos(request):
+    token = request.data.get('token')
+    idAsesor = request.data.get('idAsesor')
+
+    valido, mensaje = verificarTokenUsuario(token)
+    if not valido:
+        return Response({'mensaje': mensaje, "error": True}, status=200)
+    
+    asesor = Asesor.objects.get(id_asesor=idAsesor)
+
+    cursos = Curso.objects.filter(idasesor=asesor)
+
+    serializer = CursoSerializer(cursos, many=True)
 
     return Response({'mensaje': serializer.data, "error": False}, status=200)
     

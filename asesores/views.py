@@ -254,6 +254,8 @@ def obtenerCursosAsesor(request):
 
     return Response({'mensaje': serializer.data, "error": False}, status=200)
 
+
+
 @api_view(['POST'])
 def registrarCurso(request):
     token = request.data.get('token')
