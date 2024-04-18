@@ -54,7 +54,7 @@ def actualizarUsuario(request):
 
     valido, mensaje = verificarTokenUsuario(token)
     if not valido:
-        return Response({'mensaje': mensaje, "error": True}, status=200)
+        return Response({'mensaje': mensaje, "error": True}, status=401)
 
     if nombre is not None and password is not None and email is not None and matricula is not None:
 
@@ -83,7 +83,7 @@ def obtenerDatosUsuario(request):
 
     valido, mensaje = verificarTokenUsuario(token)
     if not valido:
-        return Response({'mensaje': mensaje, "error": True}, status=200)
+        return Response({'mensaje': mensaje, "error": True}, status=401)
     
     usuario = Usuario.objects.get(id_usuario=mensaje)
 
@@ -98,7 +98,7 @@ def obtenerCursos(request):
 
     valido, mensaje = verificarTokenUsuario(token)
     if not valido:
-        return Response({'mensaje': mensaje, "error": True}, status=200)
+        return Response({'mensaje': mensaje, "error": True}, status=401)
     
     asesor = Asesor.objects.get(id_asesor=idAsesor)
 

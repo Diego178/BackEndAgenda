@@ -18,7 +18,7 @@ def registrarAsesor(request):
 
     valido, mensaje = verificarToken(token)
     if not valido:
-        return Response({'mensaje': mensaje, "error": True}, status=200)
+        return Response({'mensaje': mensaje, "error": True}, status=401)
 
     if nombre is not None and idioma is not None and password is not None and email is not None:
 
@@ -54,7 +54,7 @@ def registrarDatosReunionVirtual(request):
 
     valido, mensaje = verificarTokenAsesor(token)
     if not valido:
-        return Response({'mensaje': mensaje, "error": True}, status=200)
+        return Response({'mensaje': mensaje, "error": True}, status=401)
 
     if url is not None and id_reunion is not None and password is not None and idAsesor is not None:
         regexURL = r'^(https?|ftp):\/\/[^\s\/$.?#].[^\s]*$'
@@ -89,7 +89,7 @@ def registrarDiaHora(request):
 
     valido, mensaje = verificarTokenAsesor(token)
     if not valido:
-        return Response({'mensaje': mensaje, "error": True}, status=200)
+        return Response({'mensaje': mensaje, "error": True}, status=401)
 
     if dia is not None and hora_inicio is not None and hora_termino is not None and modalidad is not None:
         
@@ -129,7 +129,7 @@ def actuaizarHoraDia(request):
 
     valido, mensaje = verificarTokenAsesor(token)
     if not valido:
-        return Response({'mensaje': mensaje, "error": True}, status=200)
+        return Response({'mensaje': mensaje, "error": True}, status=401)
 
     if id_dia_hora is not None and hora_inicio is not None and hora_termino is not None and modalidad is not None and estado is not None:
         
@@ -173,7 +173,7 @@ def eliminarHoraDia(request):
 
     valido, mensaje = verificarTokenAsesor(token)
     if not valido:
-        return Response({'mensaje': mensaje, "error": True}, status=200)
+        return Response({'mensaje': mensaje, "error": True}, status=401)
 
     if id_dia_hora is not None :
         try:
@@ -200,7 +200,7 @@ def obtenerDatosAsesor(request):
 
     valido, mensaje = verificarTokenAsesor(token)
     if not valido:
-        return Response({'mensaje': mensaje, "error": True}, status=200)
+        return Response({'mensaje': mensaje, "error": True}, status=401)
     
     asesor = Asesor.objects.get(id_asesor=mensaje)
 
@@ -218,7 +218,7 @@ def actualizarAsesor(request):
 
     valido, mensaje = verificarTokenAsesor(token)
     if not valido:
-        return Response({'mensaje': mensaje, "error": True}, status=200)
+        return Response({'mensaje': mensaje, "error": True}, status=401)
 
     if nombre is not None and password is not None and email is not None and idioma is not None:
 
@@ -244,7 +244,7 @@ def obtenerCursosAsesor(request):
 
     valido, mensaje = verificarTokenAsesor(token)
     if not valido:
-        return Response({'mensaje': mensaje, "error": True}, status=200)
+        return Response({'mensaje': mensaje, "error": True}, status=401)
     
     asesor = Asesor.objects.get(id_asesor=mensaje)
 
@@ -263,7 +263,7 @@ def registrarCurso(request):
 
     valido, mensaje = verificarTokenAsesor(token)
     if not valido:
-        return Response({'mensaje': mensaje, "error": True}, status=200)
+        return Response({'mensaje': mensaje, "error": True}, status=401)
     
     if nombre is not None:
 

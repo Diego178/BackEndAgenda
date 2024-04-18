@@ -16,7 +16,7 @@ def obtenerAsesoriasAsesor(request):
 
     valido, mensaje = verificarTokenAsesor(token)
     if not valido:
-        return Response({'mensaje': mensaje, "error": True}, status=200)
+        return Response({'mensaje': mensaje, "error": True}, status=401)
     
     asesorias = Asesoria.objects.filter(idasesor=mensaje)
     data = []
@@ -59,7 +59,7 @@ def obtenerAsesoriasUsuario(request):
 
     valido, mensaje = verificarTokenUsuario(token)
     if not valido:
-        return Response({'mensaje': mensaje, "error": True}, status=200)
+        return Response({'mensaje': mensaje, "error": True}, status=401)
     
     asesorias = Asesoria.objects.filter(idusuario=mensaje)
     data = []
@@ -109,7 +109,7 @@ def registrarAsesoria(request):
 
     valido, mensaje = verificarTokenUsuario(token)
     if not valido:
-        return Response({'mensaje': mensaje, "error": True}, status=200)
+        return Response({'mensaje': mensaje, "error": True}, status=401)
 
     if tipo is not None and tema is not None and fecha is not None and idAsesor is not None and idDiaHora is not None and mensaje is not None:
         if(tipo != 'asesoria' and tipo != 'oral'):
@@ -157,7 +157,7 @@ def eliminarAsesoria(request):
 
     valido, mensaje = verificarTokenUsuario(token)
     if not valido:
-        return Response({'mensaje': mensaje, "error": True}, status=200)
+        return Response({'mensaje': mensaje, "error": True}, status=401)
 
     try:
         asesoria_eliminar = Asesoria.objects.get(id_asesoria=idAsesoria)
@@ -189,7 +189,7 @@ def obtenerHorariosByAsesor(request):
 
     valido, mensaje = verificarTokenAsesor(token)
     if not valido:
-        return Response({'mensaje': mensaje, "error": True}, status=200)
+        return Response({'mensaje': mensaje, "error": True}, status=401)
     
     if not es_dia_semana(dia):
              return Response({'mensaje': 'Error, el dia se la semana no es valido.', "error": False}, status=200)
@@ -210,12 +210,12 @@ def obtenerHorariosByDia(request):
 
     valido, mensaje = verificarTokenUsuario(token)
     if not valido:
-        return Response({'mensaje': mensaje, "error": True}, status=200)
+        return Response({'mensaje': mensaje, "error": True}, status=401)
     
     if not es_dia_semana(dia):
              return Response({'mensaje': 'Error, el dia se la semana no es valido.', "error": False}, status=200)
     
-    horarios = Diahora.objects.filter(idasesor=idAsesor, dia=dia, modalidad=modalidad, eslibre=1)
+    horarios = Diahora.objects.filter(idasesor=idAsesor, dia=dia, modalidad=modalidad, eslibre=1, estado="activo")
     
     data = []
     

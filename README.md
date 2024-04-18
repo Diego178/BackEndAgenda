@@ -131,10 +131,11 @@ poner seguridad a todo (quitar consoleslogs, passwords encriptadas)
 acabar los estilos
 terminar los modales
 cambiar estatico a dinamico asesores (tarea grande) (endpoint obtener asesores, y guardar imagen) (hacer crud)
-hacer admin dashboard para asesores
+hacer admin crud para asesores
 hacer las otras paginas (preguntas frec, nosotros, etc)
 filtros de card de asesoria segun la fecha
 en la pantalla de registro mostrar el dia y mes que se realizara
+componer el get de diahora asesoria
 
 
 
