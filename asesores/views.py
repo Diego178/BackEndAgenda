@@ -283,5 +283,29 @@ def registrarCurso(request):
         return Response({'mensaje': 'Bad request', "error": True}, status=400)
 
 
+@api_view(['DELETE'])
+def eliminarCurso(request):
+    idCurso = request.data.get('idCurso')
+    token = request.data.get('token')
 
+    valido, mensaje = verificarTokenAsesor(token)
+    if not valido:
+        return Response({'mensaje': mensaje, "error": True}, status=401)
+
+    if idCurso is not None :
+        try:
+            curso = Curso.objects.get(id_curso=idCurso)
+        except ObjectDoesNotExist:
+            return Response({'mensaje': 'Error, no se encontro en la base de datos', "error": True}, status=200)
+
+        asesoria = Asesoria.objects.filter(idcurso=curso)
+
+        if asesoria.count() > 0:
+             return Response({'mensaje': 'Error, no se puede eliminar, ya que hay cursos vinculados a una asesoria activa, por favor eliminala antes.', "error": True}, status=200)
+
+        curso.delete()
+        return Response({'mensaje': 'El curso fue eliminado correctamente', "error": False}, status=200)
+
+    else:
+        return Response({'mensaje': 'Bad request', "error": True}, status=400)
 

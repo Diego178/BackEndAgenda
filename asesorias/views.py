@@ -1,6 +1,6 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .models import Asesoria, Asesor, Diahora, Usuario, Datosreunionvirtual
+from .models import Asesoria, Asesor, Curso, Diahora, Usuario, Datosreunionvirtual
 from django.core.exceptions import ObjectDoesNotExist
 from .serializers import DiaHoraSerializer
 from utils.validadores import es_dia_semana, validar_fecha
@@ -34,7 +34,8 @@ def obtenerAsesoriasAsesor(request):
                 'hora_termino': asesoria.iddiahora.hora_termino,
                 'password_reunion': datos_reunion.password,
                 'url_reunion': datos_reunion.url,
-                'id_reunion': datos_reunion.id_reunion
+                'id_reunion': datos_reunion.id_reunion,
+                'curso': asesoria.idcurso.nombrecurso
             }
             data.append(asesoria_data)
         else:
@@ -45,7 +46,8 @@ def obtenerAsesoriasAsesor(request):
                 'fecha': asesoria.fecha,
                 'dia': asesoria.iddiahora.dia,
                 'hora_inicio': asesoria.iddiahora.hora_inicio,
-                'hora_termino': asesoria.iddiahora.hora_termino
+                'hora_termino': asesoria.iddiahora.hora_termino,
+                'curso': asesoria.idcurso.nombrecurso
             }
             data.append(asesoria_data)
 
@@ -77,7 +79,8 @@ def obtenerAsesoriasUsuario(request):
                 'hora_termino': asesoria.iddiahora.hora_termino,
                 'password_reunion': datos_reunion.password,
                 'url_reunion': datos_reunion.url,
-                'id_reunion': datos_reunion.id_reunion
+                'id_reunion': datos_reunion.id_reunion,
+                'curso': asesoria.idcurso.nombrecurso,
             }
             data.append(asesoria_data)
         else:
@@ -89,7 +92,8 @@ def obtenerAsesoriasUsuario(request):
                 'tema': asesoria.tema,
                 'dia': asesoria.iddiahora.dia,
                 'hora_inicio': asesoria.iddiahora.hora_inicio,
-                'hora_termino': asesoria.iddiahora.hora_termino
+                'hora_termino': asesoria.iddiahora.hora_termino,
+                'curso': asesoria.idcurso.nombrecurso,
             }
             data.append(asesoria_data)
 
@@ -104,6 +108,7 @@ def registrarAsesoria(request):
     fecha = request.data.get('fecha')
     idAsesor = request.data.get('idAsesor')
     idDiaHora = request.data.get('idDiaHora')
+    idCurso = request.data.get('idCurso')
     token = request.data.get('token')
 
 
@@ -136,12 +141,17 @@ def registrarAsesoria(request):
         except ObjectDoesNotExist:
             return Response({'mensaje': 'Error, el usuario no existe en la base de datos.', "error": True}, status=200)
         
+        try:
+            curso = Curso.objects.get(id_curso=idCurso)
+        except ObjectDoesNotExist:
+            return Response({'mensaje': 'Error, el curso no existe en la base de datos.', "error": True}, status=200)
+        
         
         enviarCorreo('Hola, ' + asesor.nombre + ' el usuario '+ usuario.nombre + ' ha agregado una nueva asesoria para la fecha ' +  fecha ,'Asesoria nueva', asesor.email)
 
         diaHora.eslibre = 0;
         diaHora.save()
-        nueva_asesoria = Asesoria(tipo=tipo, tema=tema, fecha=fecha, idasesor=asesor, iddiahora= diaHora, idusuario=usuario)
+        nueva_asesoria = Asesoria(tipo=tipo, tema=tema, fecha=fecha, idasesor=asesor, iddiahora= diaHora, idusuario=usuario, idCurso=curso)
 
         nueva_asesoria.save()
    

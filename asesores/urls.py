@@ -10,4 +10,6 @@ urlpatterns = [
     path('obtenerDatosAsesor/', views.obtenerDatosAsesor),
     path('obtenerCursos/', views.obtenerCursosAsesor),
     path('actualizar/', views.actualizarAsesor),
+    path('eliminarCurso/', views.eliminarCurso),
+    path('registrarCurso/', views.registrarCurso),
 ]

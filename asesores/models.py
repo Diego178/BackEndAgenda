@@ -46,18 +46,6 @@ class Diahora(models.Model):
         managed = False
         db_table = 'diahora'
 
-class Asesoria(models.Model):
-    id_asesoria = models.AutoField(primary_key=True)
-    tipo = models.CharField(max_length=10)
-    tema = models.CharField(max_length=200)
-    fecha = models.DateTimeField()
-    idasesor = models.ForeignKey(Asesor, models.CASCADE, db_column='idAsesor', blank=True, null=True)  # Field name made lowercase.
-    iddiahora = models.ForeignKey(Diahora, models.CASCADE, db_column='idDiaHora', blank=True, null=True)  # Field name made lowercase.
-
-    class Meta:
-        managed = False
-        db_table = 'asesoria'
-
 class Curso(models.Model):
     id_curso = models.AutoField(primary_key=True)
     nombrecurso = models.CharField(db_column='nombreCurso', max_length=20, blank=True, null=True)  # Field name made lowercase.
@@ -66,3 +54,16 @@ class Curso(models.Model):
     class Meta:
         managed = False
         db_table = 'curso'
+
+class Asesoria(models.Model):
+    id_asesoria = models.AutoField(primary_key=True)
+    tipo = models.CharField(max_length=10)
+    tema = models.CharField(max_length=200)
+    fecha = models.DateTimeField()
+    idasesor = models.ForeignKey(Asesor, models.CASCADE, db_column='idAsesor', blank=True, null=True)  # Field name made lowercase.
+    iddiahora = models.ForeignKey(Diahora, models.CASCADE, db_column='idDiaHora', blank=True, null=True)  # Field name made lowercase.
+    idcurso = models.ForeignKey(Curso, models.CASCADE, db_column='idCurso', blank=True, null=True)  # Field name made lowercase.
+    class Meta:
+        managed = False
+        db_table = 'asesoria'
+
