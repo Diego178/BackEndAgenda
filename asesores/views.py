@@ -16,7 +16,7 @@ def registrarAsesor(request):
     password = request.data.get('password')
     token = request.data.get('token')
 
-    valido, mensaje = verificarToken(token)
+    valido, mensaje = verificarTokenAsesor(token)
     if not valido:
         return Response({'mensaje': mensaje, "error": True}, status=401)
 
@@ -309,3 +309,86 @@ def eliminarCurso(request):
     else:
         return Response({'mensaje': 'Bad request', "error": True}, status=400)
 
+
+
+@api_view(['POST'])
+def obtenerAsesores(request):
+    token = request.data.get('token')
+
+    valido, mensaje = verificarTokenAsesor(token)
+    if not valido:
+        return Response({'mensaje': mensaje, "error": True}, status=401)
+    
+    asesor = Asesor.objects.all()
+
+    serializer = AsesorSerializer(asesor, many=True)
+
+    return Response({'mensaje': serializer.data, "error": False}, status=200)
+
+
+@api_view(['DELETE'])
+def eliminarAsesor(request):
+    idAsesor = request.data.get('idAsesor')
+    token = request.data.get('token')
+
+    valido, mensaje = verificarTokenAsesor(token)
+    if not valido:
+        return Response({'mensaje': mensaje, "error": True}, status=401)
+    if idAsesor is not None :
+
+        if(idAsesor == mensaje):
+            return Response({'mensaje': "No se puede eliminar el usuario, tiene una sesion activa", "error": True}, status=401)
+
+        try:
+            asesor_aliminar = Asesor.objects.get(id_asesor=idAsesor)
+        except ObjectDoesNotExist:
+            return Response({'mensaje': 'Error, no se encontro al asesor en la base de datos', "error": True}, status=200)
+
+        asesorias = Asesoria.objects.filter(idasesor=asesor_aliminar)
+
+        if asesorias.count() > 0:
+             return Response({'mensaje': 'Error, no se puede eliminar, ya que hay asesorias vinculadas al asesor, por favor de eliminalas antes.', "error": True}, status=200)
+
+        cursos = Curso.objects.filter(idasesor=asesor_aliminar)
+
+        if cursos.count() > 0:
+             return Response({'mensaje': 'Error, no se puede eliminar, ya que hay cursos vinculados al asesor, por favor de eliminalos antes.', "error": True}, status=200)
+
+
+        asesor_aliminar.delete()
+        return Response({'mensaje': 'El asesor fue eliminado correctamente', "error": False}, status=200)
+
+    else:
+        return Response({'mensaje': 'Bad request', "error": True}, status=400)
+
+
+
+@api_view(['POST'])
+def actualizarAsesorCRUD(request):
+    # Obtener los datos de la peticion
+    nombre = request.data.get('nombre')
+    idAsesor = request.data.get('idAsesor')
+    idioma = request.data.get('idioma')
+    email = request.data.get('email')
+    password = request.data.get('password')
+    token = request.data.get('token')
+
+    valido, mensaje = verificarTokenAsesor(token)
+    if not valido:
+        return Response({'mensaje': mensaje, "error": True}, status=401)
+
+    if nombre is not None and idioma is not None and password is not None and email is not None:
+
+        if not es_valido_email(email):
+            return Response({'mensaje': 'Correo ingresado no valido', "error": True}, status=200)
+        
+        if not es_valido_password(password):
+            return Response({'mensaje': 'La contrasena no cumple los requisitos para que sea valida', "error": True}, status=200)
+
+        nuevo_asesor = Asesor(id_asesor=idAsesor, nombre=nombre, idioma=idioma, email=email, password=password)
+
+        nuevo_asesor.save()
+   
+        return Response({'mensaje': 'Datos del asesor actualizados correctamente', "error": False}, status=200)  
+    else:
+        return Response({'mensaje': 'Bad request', "error": True}, status=400)  
