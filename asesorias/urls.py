@@ -6,6 +6,7 @@ urlpatterns = [
     path('obtenerHorariosByAsesor/', views.obtenerHorariosByAsesor),
     path('obtenerUsuario/', views.obtenerAsesoriasUsuario),
     path('registrar/', views.registrarAsesoria),
-    path('eliminar/', views.eliminarAsesoria),
+    path('eliminarAsUsuario/', views.eliminarAsesoriaUsuario),
+    path('eliminarAsAsesor/', views.eliminarAsesoriaAsesor),
     path('obtenerHorasByDia/', views.obtenerHorariosByDia),
 ]

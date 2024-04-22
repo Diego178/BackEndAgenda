@@ -151,7 +151,7 @@ def registrarAsesoria(request):
 
         diaHora.eslibre = 0;
         diaHora.save()
-        nueva_asesoria = Asesoria(tipo=tipo, tema=tema, fecha=fecha, idasesor=asesor, iddiahora= diaHora, idusuario=usuario, idCurso=curso)
+        nueva_asesoria = Asesoria(tipo=tipo, tema=tema, fecha=fecha, idasesor=asesor, iddiahora= diaHora, idusuario=usuario, idcurso=curso)
 
         nueva_asesoria.save()
    
@@ -160,7 +160,7 @@ def registrarAsesoria(request):
         return Response({'mensaje': 'Bad request', "error": True}, status=400) 
     
 @api_view(['DELETE'])
-def eliminarAsesoria(request):
+def eliminarAsesoriaUsuario(request):
     # Obtener los datos de la peticion
     idAsesoria = request.data.get('id_asesoria')
     token = request.data.get('token')
@@ -192,6 +192,42 @@ def eliminarAsesoria(request):
 
     return Response({'mensaje': 'Eliminado correctamente', "error": False}, status=200) 
 
+
+   
+@api_view(['DELETE'])
+def eliminarAsesoriaAsesor(request):
+    # Obtener los datos de la peticion
+    idAsesoria = request.data.get('id_asesoria')
+    token = request.data.get('token')
+
+    valido, mensaje = verificarTokenAsesor(token)
+    if not valido:
+        return Response({'mensaje': mensaje, "error": True}, status=401)
+
+    try:
+        asesoria_eliminar = Asesoria.objects.get(id_asesoria=idAsesoria)
+    except ObjectDoesNotExist:
+        return Response({'mensaje': 'La asesoria que desea eliminar no existe', "error": False}, status=200) 
+
+    fecha = asesoria_eliminar.fecha
+
+    asesor = Asesor.objects.get(id_asesor=mensaje)
+
+    enviarCorreo('Hola, el asesor ' + asesor.nombre + ' ha cancelado la asesoria de la fecha '+ str(fecha), 'Una asesoria se cancelo', asesoria_eliminar.idasesor.email)
+
+    try:
+        diaHora= Diahora.objects.get(id_diahora=asesoria_eliminar.iddiahora.id_diahora)
+    except ObjectDoesNotExist:
+        return Response({'mensaje': 'Error, el horario elegido no existe en la base de datos.', "error": True}, status=200)
+        
+    diaHora.eslibre = 1;
+    diaHora.save()
+    asesoria_eliminar.delete()
+    
+
+    return Response({'mensaje': 'Eliminado correctamente', "error": False}, status=200) 
+
+
 @api_view(['POST'])
 def obtenerHorariosByAsesor(request):
     dia = request.data.get('dia')
@@ -221,25 +257,25 @@ def obtenerHorariosByDia(request):
     valido, mensaje = verificarTokenUsuario(token)
     if not valido:
         return Response({'mensaje': mensaje, "error": True}, status=401)
+    if modalidad is not None and idAsesor is not None and dia is not None:
     
-    if not es_dia_semana(dia):
-             return Response({'mensaje': 'Error, el dia se la semana no es valido.', "error": False}, status=200)
-    
-    horarios = Diahora.objects.filter(idasesor=idAsesor, dia=dia, modalidad=modalidad, eslibre=1, estado="activo")
-    
-    data = []
-    
-    for hora in horarios:
-        hora_data = {
-            'idDiaHora': hora.id_diahora,
-            "hora": hora.hora_inicio.strftime("%H:%M") + " a " + hora.hora_termino.strftime("%H:%M")
-        }
-        data.append(hora_data)
+        if not es_dia_semana(dia):
+                return Response({'mensaje': 'Error, el dia se la semana no es valido.', "error": False}, status=200)
+        
+        horarios = Diahora.objects.filter(idasesor=idAsesor, dia=dia, modalidad=modalidad, eslibre=1, estado="activo")
+        
+        data = []
+        
+        for hora in horarios:
+            hora_data = {
+                'idDiaHora': hora.id_diahora,
+                "hora": hora.hora_inicio.strftime("%H:%M") + " a " + hora.hora_termino.strftime("%H:%M")
+            }
+            data.append(hora_data)
 
-
-
-    return Response({'mensaje': data, "error": False}, status=200)
-
+        return Response({'mensaje': data, "error": False}, status=200)
+    else:
+        return Response({'mensaje': 'Bad request', "error": True}, status=400) 
 
 
 
