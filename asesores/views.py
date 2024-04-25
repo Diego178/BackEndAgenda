@@ -4,8 +4,9 @@ from .models import Asesor, Datosreunionvirtual, Diahora, Asesoria, Curso
 from utils.validadores import es_dia_semana, es_hora_valida, es_valido_email, es_valido_modalidad, es_valido_password
 from django.core.exceptions import ObjectDoesNotExist
 from servicioAgenda.authentication import verificarTokenAsesor, verificarToken, verificarTokenUsuario
-from.serializers import AsesorSerializer, CursoSerializer
 from django.contrib.auth.hashers import make_password
+from.serializers import AsesorSerializer, CursoSerializer, DatosReunionSerializer
+import re 
 
 @api_view(['POST'])
 def registrarAsesor(request):
@@ -276,7 +277,7 @@ def registrarCurso(request):
             return Response({'mensaje': 'Error, el asesor no existe en la base de datos.', "error": True}, status=200)
         
 
-        nuevo_datos = Curso(nombre=nombre, idasesor=asesor)
+        nuevo_datos = Curso(nombrecurso=nombre, idasesor=asesor)
 
         nuevo_datos.save()
    
@@ -395,3 +396,23 @@ def actualizarAsesorCRUD(request):
         return Response({'mensaje': 'Datos del asesor actualizados correctamente', "error": False}, status=200)  
     else:
         return Response({'mensaje': 'Bad request', "error": True}, status=400)  
+
+
+@api_view(['POST'])
+def obtenerDatosReunionAsesoria(request):
+    token = request.data.get('token')
+
+    valido, mensaje = verificarTokenAsesor(token)
+    if not valido:
+        return Response({'mensaje': mensaje, "error": True}, status=401)
+    
+    asesor = Asesor.objects.get(id_asesor=mensaje)
+
+    datos_reunion = Datosreunionvirtual.objects.get(idasesor=asesor)
+
+    serializer = DatosReunionSerializer(datos_reunion)
+
+    return Response({'mensaje': serializer.data, "error": False}, status=200)
+
+
+
