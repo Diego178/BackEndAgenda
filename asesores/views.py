@@ -273,7 +273,7 @@ def registrarCurso(request):
             return Response({'mensaje': 'Error, el asesor no existe en la base de datos.', "error": True}, status=200)
         
 
-        nuevo_datos = Curso(nombre=nombre, idasesor=asesor)
+        nuevo_datos = Curso(nombrecurso=nombre, idasesor=asesor)
 
         nuevo_datos.save()
    

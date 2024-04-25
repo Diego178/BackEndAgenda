@@ -5,8 +5,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from .serializers import DiaHoraSerializer
 from utils.validadores import es_dia_semana, validar_fecha
 from servicioAgenda.email import enviarCorreo
-from utils.validadores import validar_fecha, obtenerDia
-from servicioAgenda.authentication import verificarToken, verificarTokenAsesor, verificarTokenUsuario
+from utils.validadores import validar_fecha
+from servicioAgenda.authentication import verificarTokenAsesor, verificarTokenUsuario
 
 
 @api_view(['POST'])
@@ -21,35 +21,19 @@ def obtenerAsesoriasAsesor(request):
     asesorias = Asesoria.objects.filter(idasesor=mensaje)
     data = []
     for asesoria in asesorias:
-        if asesoria.tipo == 'virtual':
-            datos_reunion = Datosreunionvirtual.objects.get(idasesor=asesoria.idasesor)
-            asesoria_data = {
-                'id_asesoria': asesoria.id_asesoria,
-                'tipo': asesoria.tipo,
-                'tema': asesoria.tema,
-                'nombre_usuario': asesoria.idusuario.nombre,
-                'fecha': asesoria.fecha,
-                'dia': asesoria.iddiahora.dia,
-                'hora_inicio': asesoria.iddiahora.hora_inicio,
-                'hora_termino': asesoria.iddiahora.hora_termino,
-                'password_reunion': datos_reunion.password,
-                'url_reunion': datos_reunion.url,
-                'id_reunion': datos_reunion.id_reunion,
-                'curso': asesoria.idcurso.nombrecurso
-            }
-            data.append(asesoria_data)
-        else:
-            asesoria_data = {
-                'id_asesoria': asesoria.id_asesoria,
-                'tipo': asesoria.tipo,
-                'nombre_usuario': asesoria.idusuario.nombre,
-                'fecha': asesoria.fecha,
-                'dia': asesoria.iddiahora.dia,
-                'hora_inicio': asesoria.iddiahora.hora_inicio,
-                'hora_termino': asesoria.iddiahora.hora_termino,
-                'curso': asesoria.idcurso.nombrecurso
-            }
-            data.append(asesoria_data)
+        asesoria_data = {
+            'id_asesoria': asesoria.id_asesoria,
+            'tipo': asesoria.tipo,
+            'tema': asesoria.tema,
+            'nombre_usuario': asesoria.idusuario.nombre,
+            'fecha': asesoria.fecha,
+            'dia': asesoria.iddiahora.dia,
+            'hora_inicio': asesoria.iddiahora.hora_inicio,
+            'hora_termino': asesoria.iddiahora.hora_termino,
+            'curso': asesoria.idcurso.nombrecurso,
+            'modalidad': asesoria.iddiahora.modalidad
+        }
+        data.append(asesoria_data)
 
     return Response(data, status=200)
 
