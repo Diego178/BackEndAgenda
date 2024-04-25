@@ -8,7 +8,7 @@ from .models import Usuario
 from .serializers import UsuarioSerializer
 from servicioAgenda.authentication import verificarTokenUsuario
 from django.core.exceptions import ObjectDoesNotExist
-import re 
+from django.contrib.auth.hashers import make_password
 
 @api_view(['POST'])
 def registrarUsuario(request):
@@ -35,7 +35,9 @@ def registrarUsuario(request):
         if Usuario.objects.filter(matricula=matricula).exists():
             return Response({'mensaje': 'Ya existe un usuario con esta matricula registrada.', "error": True}, status=200)
         
-        nuevo_usuario = Usuario(nombre=nombre, matricula=matricula, email=email, password=password)
+        password_encriptada = make_password(password)
+
+        nuevo_usuario = Usuario(nombre=nombre, matricula=matricula, email=email, password=password_encriptada)
 
         nuevo_usuario.save()
    
@@ -67,8 +69,9 @@ def actualizarUsuario(request):
         if not es_valido_matricula(matricula):
             return Response({'mensaje': 'La matricula no cumple los requisitos para que sea valida.', "error": True}, status=200)
         
+        password_encriptada = make_password(password)
 
-        nuevo_usuario = Usuario(id_usuario=mensaje, password=password, email=email, nombre=nombre, matricula=matricula)
+        nuevo_usuario = Usuario(id_usuario=mensaje, password=password_encriptada, email=email, nombre=nombre, matricula=matricula)
 
         nuevo_usuario.save()
    

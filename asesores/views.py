@@ -5,7 +5,7 @@ from utils.validadores import es_dia_semana, es_hora_valida, es_valido_email, es
 from django.core.exceptions import ObjectDoesNotExist
 from servicioAgenda.authentication import verificarTokenAsesor, verificarToken, verificarTokenUsuario
 from.serializers import AsesorSerializer, CursoSerializer
-import re 
+from django.contrib.auth.hashers import make_password
 
 @api_view(['POST'])
 def registrarAsesor(request):
@@ -33,7 +33,9 @@ def registrarAsesor(request):
         if Asesor.objects.filter(email=email).exists():
             return Response({'mensaje': 'Ya existe un asesor con este correo electrónico', "error": True}, status=200)
         
-        nuevo_asesor = Asesor(nombre=nombre, idioma=idioma, email=email, password=password)
+        password_encriptada = make_password(password)
+        
+        nuevo_asesor = Asesor(nombre=nombre, idioma=idioma, email=email, password=password_encriptada)
 
         nuevo_asesor.save()
    
@@ -228,8 +230,9 @@ def actualizarAsesor(request):
         if not es_valido_password(password):
             return Response({'mensaje': 'La contrasena no cumple los requisitos para que sea valida.', "error": True}, status=200)
         
-
-        nuevo_asesor = Asesor(id_asesor=mensaje, password=password, email=email, nombre=nombre, idioma=idioma)
+        password_encriptada = make_password(password)
+        
+        nuevo_asesor = Asesor(id_asesor=mensaje, password=password_encriptada, email=email, nombre=nombre, idioma=idioma)
 
         nuevo_asesor.save()
    

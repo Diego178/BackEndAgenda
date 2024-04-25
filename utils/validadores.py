@@ -63,7 +63,7 @@ def es_valido_email(email):
     return False
         
 def es_valido_password(password):
-    regexPassword = r'^.{8,16}$'
+    regexPassword = r'^.{8,255}$'
     if re.match(regexPassword, password):
             return True
     return False
