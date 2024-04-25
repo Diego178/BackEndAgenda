@@ -134,8 +134,11 @@ cambiar estatico a dinamico asesores (tarea grande) (endpoint obtener asesores, 
 hacer admin crud para asesores
 filtros de card de asesoria segun la fecha
 en la pantalla de registro mostrar el dia y mes que se realizara
-agregar modal al eliminar diahora
-falta refrescar asesorias al eliminar una.
+agregar modal (aceptar cancelar) al eliminar diahora
+falta refrescar asesorias al eliminar una asesoria en asesor y usuario
+hacer lo mismo de mejorar cards en asesor
+agregar, eliminar cursos
+datos zoom
 
 
 

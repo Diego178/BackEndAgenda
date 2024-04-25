@@ -66,7 +66,7 @@ def obtenerAsesoriasUsuario(request):
     asesorias = Asesoria.objects.filter(idusuario=mensaje)
     data = []
     for asesoria in asesorias:
-        if asesoria.tipo == 'virtual':
+        if asesoria.iddiahora.modalidad == 'virtual':
             datos_reunion = Datosreunionvirtual.objects.get(idasesor=asesoria.idasesor)
             asesoria_data = {
                 'id_asesoria': asesoria.id_asesoria,
@@ -81,6 +81,7 @@ def obtenerAsesoriasUsuario(request):
                 'url_reunion': datos_reunion.url,
                 'id_reunion': datos_reunion.id_reunion,
                 'curso': asesoria.idcurso.nombrecurso,
+                'modalidad': asesoria.iddiahora.modalidad
             }
             data.append(asesoria_data)
         else:
@@ -94,6 +95,7 @@ def obtenerAsesoriasUsuario(request):
                 'hora_inicio': asesoria.iddiahora.hora_inicio,
                 'hora_termino': asesoria.iddiahora.hora_termino,
                 'curso': asesoria.idcurso.nombrecurso,
+                'modalidad': asesoria.iddiahora.modalidad
             }
             data.append(asesoria_data)
 
