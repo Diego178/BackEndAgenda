@@ -218,12 +218,9 @@ def actualizarAsesor(request):
     idioma = request.data.get('idioma')
     email = request.data.get('email')
     password = request.data.get('password')
-    token = request.data.get('token')
+    idAsesor = request.data.get('idAsesor')
     fotoBase64 = request.data.get('fotoBase64')
 
-    valido, mensaje = verificarTokenAsesor(token)
-    if not valido:
-        return Response({'mensaje': mensaje, "error": True}, status=401)
 
     if nombre is not None and password is not None and email is not None and idioma is not None:
 
@@ -235,7 +232,7 @@ def actualizarAsesor(request):
         
         password_encriptada = make_password(password)
         
-        nuevo_asesor = Asesor(id_asesor=mensaje, password=password_encriptada, email=email, nombre=nombre, idioma=idioma,  fotobase64=fotoBase64)
+        nuevo_asesor = Asesor(id_asesor=idAsesor, password=password_encriptada, email=email, nombre=nombre, idioma=idioma,  fotobase64=fotoBase64)
 
         nuevo_asesor.save()
    
@@ -320,10 +317,6 @@ def eliminarCurso(request):
 @api_view(['POST'])
 def obtenerAsesores(request):
     token = request.data.get('token')
-
-    valido, mensaje = verificarTokenAsesor(token)
-    if not valido:
-        return Response({'mensaje': mensaje, "error": True}, status=401)
     
     asesor = Asesor.objects.all()
 
@@ -335,15 +328,8 @@ def obtenerAsesores(request):
 @api_view(['DELETE'])
 def eliminarAsesor(request):
     idAsesor = request.data.get('idAsesor')
-    token = request.data.get('token')
 
-    valido, mensaje = verificarTokenAsesor(token)
-    if not valido:
-        return Response({'mensaje': mensaje, "error": True}, status=401)
     if idAsesor is not None :
-
-        if(idAsesor == mensaje):
-            return Response({'mensaje': "No se puede eliminar el usuario, tiene una sesion activa", "error": True}, status=401)
 
         try:
             asesor_aliminar = Asesor.objects.get(id_asesor=idAsesor)
