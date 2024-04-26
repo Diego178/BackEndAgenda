@@ -16,6 +16,7 @@ def registrarAsesor(request):
     email = request.data.get('email')
     password = request.data.get('password')
     token = request.data.get('token')
+    fotoBase64 = request.data.get('fotoBase64')
 
     valido, mensaje = verificarTokenAsesor(token)
     if not valido:
@@ -36,7 +37,7 @@ def registrarAsesor(request):
         
         password_encriptada = make_password(password)
         
-        nuevo_asesor = Asesor(nombre=nombre, idioma=idioma, email=email, password=password_encriptada)
+        nuevo_asesor = Asesor(nombre=nombre, idioma=idioma, email=email, password=password_encriptada, fotobase64=fotoBase64)
 
         nuevo_asesor.save()
    
@@ -218,6 +219,7 @@ def actualizarAsesor(request):
     email = request.data.get('email')
     password = request.data.get('password')
     token = request.data.get('token')
+    fotoBase64 = request.data.get('fotoBase64')
 
     valido, mensaje = verificarTokenAsesor(token)
     if not valido:
@@ -233,7 +235,7 @@ def actualizarAsesor(request):
         
         password_encriptada = make_password(password)
         
-        nuevo_asesor = Asesor(id_asesor=mensaje, password=password_encriptada, email=email, nombre=nombre, idioma=idioma)
+        nuevo_asesor = Asesor(id_asesor=mensaje, password=password_encriptada, email=email, nombre=nombre, idioma=idioma,  fotobase64=fotoBase64)
 
         nuevo_asesor.save()
    

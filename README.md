@@ -126,17 +126,12 @@ ver los tokens en frontend
 agregar 2 horitas
 
 
-
-poner seguridad a todo (quitar consoleslogs, passwords encriptadas)
-acabar los estilos
-terminar los modales
 cambiar estatico a dinamico asesores (tarea grande) (endpoint obtener asesores, y guardar imagen) (hacer crud)
 hacer admin crud para asesores
 filtros de card de asesoria segun la fecha
 en la pantalla de registro mostrar el dia y mes que se realizara
 agregar modal (aceptar cancelar) al eliminar diahora
 falta refrescar asesorias al eliminar una asesoria en asesor y usuario
-agregar, eliminar cursos
 datos zoom
 
 
