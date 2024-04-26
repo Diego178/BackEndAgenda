@@ -7,7 +7,7 @@ class Asesor(models.Model):
     idioma = models.CharField(max_length=15)
     email = models.EmailField(max_length=45)
     password = models.CharField(max_length=16)
-    fotobase46 = models.BinaryField(db_column='fotoBase64')
+    fotoBase64 = models.TextField()
 
     class Meta:
         managed = False

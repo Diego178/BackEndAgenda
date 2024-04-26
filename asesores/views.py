@@ -15,16 +15,9 @@ def registrarAsesor(request):
     idioma = request.data.get('idioma')
     email = request.data.get('email')
     password = request.data.get('password')
-    token = request.data.get('token')
     fotoBase64 = request.data.get('fotoBase64')
 
-    valido, mensaje = verificarTokenAsesor(token)
-    if not valido:
-        return Response({'mensaje': mensaje, "error": True}, status=401)
-
     if nombre is not None and idioma is not None and password is not None and email is not None:
-
-    
 
         if not es_valido_email(email):
             return Response({'mensaje': 'Correo ingresado no valido', "error": True}, status=200)
@@ -37,7 +30,7 @@ def registrarAsesor(request):
         
         password_encriptada = make_password(password)
         
-        nuevo_asesor = Asesor(nombre=nombre, idioma=idioma, email=email, password=password_encriptada, fotobase64=fotoBase64)
+        nuevo_asesor = Asesor(nombre=nombre, idioma=idioma, email=email, password=password_encriptada, fotoBase64=fotoBase64)
 
         nuevo_asesor.save()
    
@@ -316,7 +309,6 @@ def eliminarCurso(request):
 
 @api_view(['POST'])
 def obtenerAsesores(request):
-    token = request.data.get('token')
     
     asesor = Asesor.objects.all()
 
