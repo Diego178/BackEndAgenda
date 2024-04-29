@@ -26,7 +26,8 @@ INSTALLED_APPS = [
     'autenticacion',
     'asesores',
     'usuarios',
-    'asesorias'
+    'asesorias',
+    'servicioAgenda',
 ]
 
 MIDDLEWARE = [
