@@ -211,21 +211,29 @@ def actualizarAsesor(request):
     idioma = request.data.get('idioma')
     email = request.data.get('email')
     password = request.data.get('password')
-    idAsesor = request.data.get('idAsesor')
-    fotoBase64 = request.data.get('fotoBase64')
+    token = request.data.get('token')
 
+    valido, mensaje = verificarTokenAsesor(token)
+    if not valido:
+        return Response({'mensaje': mensaje, "error": True}, status=401)
 
-    if nombre is not None and password is not None and email is not None and idioma is not None:
+    if nombre is not None and email is not None and idioma is not None:
 
         if not es_valido_email(email):
             return Response({'mensaje': 'Correo ingresado no valido.', "error": True}, status=200)
-        
+
         if not es_valido_password(password):
             return Response({'mensaje': 'La contrasena no cumple los requisitos para que sea valida.', "error": True}, status=200)
         
-        password_encriptada = make_password(password)
+        try:
+            asesor = Asesor.objects.get(id_asesor=mensaje)
+        except ObjectDoesNotExist:
+            return Response({'mensaje': 'Error, el asesor no existe en la base de datos.', "error": True}, status=200)
         
-        nuevo_asesor = Asesor(id_asesor=idAsesor, password=password_encriptada, email=email, nombre=nombre, idioma=idioma,  fotobase64=fotoBase64)
+
+            
+            
+        nuevo_asesor = Asesor(id_asesor=asesor.id_asesor, password=password, email=email, nombre=nombre, idioma=idioma,  fotoBase64=asesor.fotoBase64)
 
         nuevo_asesor.save()
    
@@ -386,13 +394,48 @@ def obtenerDatosReunionAsesoria(request):
     if not valido:
         return Response({'mensaje': mensaje, "error": True}, status=401)
     
-    asesor = Asesor.objects.get(id_asesor=mensaje)
+    try:
+        asesor = Asesor.objects.get(id_asesor=mensaje)
+    except Asesor.DoesNotExist:
+        return Response({'mensaje': 'No se encontró el asesor asociado al token', 'error': True}, status=404)
 
-    datos_reunion = Datosreunionvirtual.objects.get(idasesor=asesor)
+    # Obtener los datos de la reunión virtual del asesor
+    try:
+        datos_reunion = Datosreunionvirtual.objects.get(idasesor=asesor)
+    except Datosreunionvirtual.DoesNotExist:
+        return Response({'mensaje': 'No se encontraron datos de reunión para el asesor', 'error': True}, status=404)
+
 
     serializer = DatosReunionSerializer(datos_reunion)
 
     return Response({'mensaje': serializer.data, "error": False}, status=200)
 
+@api_view(['PUT'])
+def actualizarDatosReunionAsesoria(request):
+    id_reunion = request.data.get('id_reunion')
+    url = request.data.get('url')
+    password = request.data.get('password')
+    id_datosreunion = request.data.get('id_datosreunion')
+    token = request.data.get('token')
+
+    valido, mensaje = verificarTokenAsesor(token)
+    if not valido:
+        return Response({'mensaje': mensaje, "error": True}, status=401)
 
 
+    if id_reunion is not None and password is not None and url is not None and id_datosreunion is not None:
+
+        try:
+            asesor = Asesor.objects.get(id_asesor=mensaje)
+        except Asesor.DoesNotExist:
+            return Response({'mensaje': 'No se encontró el asesor asociado al token', 'error': True}, status=404)
+
+
+        nuevo_datos = Datosreunionvirtual(id_datosreunion=id_datosreunion, password=password, url=url, id_reunion=id_reunion, idasesor=asesor)
+
+        nuevo_datos.save()
+   
+        return Response({'mensaje': 'Los datos del usuario fueron actualizados correctamente', "error": False}, status=200)
+
+    else:
+        return Response({'mensaje': 'Bad request', "error": True}, status=400)
