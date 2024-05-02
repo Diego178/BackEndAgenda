@@ -1,7 +1,7 @@
 from django.db.models import Count
 from django.db.models.functions import TruncMonth
 from .models import Asesoria, Usuario, Asesor, Diahora, Curso
-from reportlab.lib.pagesizes import letter
+from reportlab.lib.pagesizes import letter, landscape
 from reportlab.pdfgen import canvas
 import csv
 import pandas as pd
@@ -10,7 +10,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 import os
-'''
+from reportlab.pdfgen import canvas
 
 
 # Extraer los datos de la base de datos
@@ -19,24 +19,39 @@ asesorias = Asesoria.objects.all().select_related('idasesor', 'idusuario', 'iddi
 # Agrupar los datos por mes
 asesorias_por_mes = asesorias.annotate(month=TruncMonth('fecha')).values('month', 'id_asesoria', 'tipo', 'tema', 'fecha', 'idasesor__nombre', 'idusuario__nombre', 'idusuario__matricula', 'iddiahora__hora_inicio', 'iddiahora__hora_termino', 'iddiahora__modalidad', 'idcurso__nombrecurso').annotate(count=Count('id_asesoria'))
 
-# Ahora, asesorias_por_mes es una lista de diccionarios, donde cada diccionario tiene los campos especificados y un campo 'count' que representa el número de asesorías en ese mes.
-
 
 def export_to_pdf(data):
-    c = canvas.Canvas("reporte.pdf", pagesize=letter)
-    width, height = letter
+    c = canvas.Canvas("reporte.pdf", pagesize=landscape(letter))
+    width, height = landscape(letter)
 
     # Define el espacio entre las líneas y la posición inicial
     line_height = 12
     y = height - 50
 
+    # Añade un título
+    c.setFont("Helvetica-Bold", 24)
+    c.drawCentredString(width / 2, y, "Reporte")
+    y -= 30
+
+    # Cambia el tamaño de la fuente para los encabezados de las columnas
+    c.setFont("Helvetica-Bold", 14)
+
     # Escribe los encabezados de las columnas
     for i, column in enumerate(data[0].keys()):
         c.drawString(30 + i*100, y, str(column))
 
+    # Cambia el tamaño de la fuente para los datos
+    c.setFont("Helvetica", 10)
+
     # Escribe los datos
     for row in data:
         y -= line_height
+
+        # Comprueba si necesitamos comenzar una nueva página
+        if y < 50:
+            c.showPage()
+            y = height - 50
+
         for i, item in enumerate(row.values()):
             c.drawString(30 + i*100, y, str(item))
 
@@ -83,7 +98,3 @@ class ReporteView(APIView):
         response = FileResponse(open(filename, 'rb'), content_type='application/octet-stream')
         response['Content-Disposition'] = 'attachment; filename="%s"' % filename
         return response
-
-        '''
-
-
