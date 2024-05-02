@@ -5,7 +5,7 @@ from utils.validadores import es_dia_semana, es_hora_valida, es_valido_email, es
 from django.core.exceptions import ObjectDoesNotExist
 from servicioAgenda.authentication import verificarTokenAsesor, verificarToken, verificarTokenUsuario
 from django.contrib.auth.hashers import make_password
-from.serializers import AsesorSerializer, CursoSerializer, DatosReunionSerializer
+from.serializers import AsesorSerializer, AsesorSerializerGET, CursoSerializer, DatosReunionSerializer
 import re 
 
 @api_view(['POST'])
@@ -307,12 +307,12 @@ def eliminarCurso(request):
 
 
 
-@api_view(['POST'])
+@api_view(['GET'])
 def obtenerAsesores(request):
     
     asesor = Asesor.objects.all()
 
-    serializer = AsesorSerializer(asesor, many=True)
+    serializer = AsesorSerializerGET(asesor, many=True)
 
     return Response({'mensaje': serializer.data, "error": False}, status=200)
 

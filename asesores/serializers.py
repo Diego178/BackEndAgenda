@@ -12,6 +12,18 @@ class AsesorSerializer(serializers.ModelSerializer):
         if obj.fotoBase64:
             return obj.fotoBase64.decode('utf-8')
         return None
+    
+class AsesorSerializerGET(serializers.ModelSerializer):
+    fotoBase64 = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Asesor
+        fields = ['id_asesor', 'nombre', 'idioma', 'fotoBase64']
+
+    def get_fotoBase64(self, obj):
+        if obj.fotoBase64:
+            return obj.fotoBase64.decode('utf-8')
+        return None
 
 class CursoSerializer(serializers.ModelSerializer):
     class Meta:

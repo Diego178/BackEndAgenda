@@ -10,6 +10,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 import os
+'''
 
 
 # Extraer los datos de la base de datos
@@ -82,3 +83,7 @@ class ReporteView(APIView):
         response = FileResponse(open(filename, 'rb'), content_type='application/octet-stream')
         response['Content-Disposition'] = 'attachment; filename="%s"' % filename
         return response
+
+        '''
+
+
