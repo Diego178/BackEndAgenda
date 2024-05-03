@@ -31,7 +31,8 @@ def obtenerAsesoriasAsesor(request):
             'hora_inicio': asesoria.iddiahora.hora_inicio,
             'hora_termino': asesoria.iddiahora.hora_termino,
             'curso': asesoria.idcurso.nombrecurso,
-            'modalidad': asesoria.iddiahora.modalidad
+            'modalidad': asesoria.iddiahora.modalidad,
+            'escancelada': asesoria.escancelada
         }
         data.append(asesoria_data)
 
@@ -65,7 +66,8 @@ def obtenerAsesoriasUsuario(request):
                 'url_reunion': datos_reunion.url,
                 'id_reunion': datos_reunion.id_reunion,
                 'curso': asesoria.idcurso.nombrecurso,
-                'modalidad': asesoria.iddiahora.modalidad
+                'modalidad': asesoria.iddiahora.modalidad,
+                'escancelada': asesoria.escancelada
             }
             data.append(asesoria_data)
         else:
@@ -79,7 +81,8 @@ def obtenerAsesoriasUsuario(request):
                 'hora_inicio': asesoria.iddiahora.hora_inicio,
                 'hora_termino': asesoria.iddiahora.hora_termino,
                 'curso': asesoria.idcurso.nombrecurso,
-                'modalidad': asesoria.iddiahora.modalidad
+                'modalidad': asesoria.iddiahora.modalidad,
+                'escancelada': asesoria.escancelada
             }
             data.append(asesoria_data)
 
@@ -137,7 +140,7 @@ def registrarAsesoria(request):
 
         diaHora.eslibre = 0;
         diaHora.save()
-        nueva_asesoria = Asesoria(tipo=tipo, tema=tema, fecha=fecha, idasesor=asesor, iddiahora= diaHora, idusuario=usuario, idcurso=curso)
+        nueva_asesoria = Asesoria(tipo=tipo, tema=tema, fecha=fecha, idasesor=asesor, iddiahora= diaHora, idusuario=usuario, idcurso=curso, escancelada = 0)
 
         nueva_asesoria.save()
    
@@ -146,7 +149,7 @@ def registrarAsesoria(request):
         return Response({'mensaje': 'Bad request', "error": True}, status=400) 
     
 @api_view(['DELETE'])
-def eliminarAsesoriaUsuario(request):
+def cancelarAsesoriaUsuario(request):
     # Obtener los datos de la peticion
     idAsesoria = request.data.get('id_asesoria')
     token = request.data.get('token')
@@ -173,15 +176,16 @@ def eliminarAsesoriaUsuario(request):
         
     diaHora.eslibre = 1;
     diaHora.save()
-    asesoria_eliminar.delete()
+    asesoria_eliminar.escancelada = 1;
+    asesoria_eliminar.save()
     
 
-    return Response({'mensaje': 'Eliminado correctamente', "error": False}, status=200) 
+    return Response({'mensaje': 'Cancelada correctamente', "error": False}, status=200) 
 
 
    
 @api_view(['DELETE'])
-def eliminarAsesoriaAsesor(request):
+def cancelarAsesoriaAsesor(request):
     # Obtener los datos de la peticion
     idAsesoria = request.data.get('id_asesoria')
     token = request.data.get('token')
@@ -208,10 +212,11 @@ def eliminarAsesoriaAsesor(request):
         
     diaHora.eslibre = 1;
     diaHora.save()
-    asesoria_eliminar.delete()
+    asesoria_eliminar.escancelada = 1;
+    asesoria_eliminar.save()
     
 
-    return Response({'mensaje': 'Eliminado correctamente', "error": False}, status=200) 
+    return Response({'mensaje': 'Cancelada correctamente', "error": False}, status=200) 
 
 
 @api_view(['POST'])

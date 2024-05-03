@@ -48,9 +48,7 @@ def registrarUsuario(request):
 @api_view(['PUT'])
 def actualizarUsuario(request):
     nombre = request.data.get('nombre')
-    password = request.data.get('password')
     email = request.data.get('email')
-    matricula = request.data.get('matricula')
     token = request.data.get('token')
 
 
@@ -58,22 +56,21 @@ def actualizarUsuario(request):
     if not valido:
         return Response({'mensaje': mensaje, "error": True}, status=401)
 
-    if nombre is not None and password is not None and email is not None and matricula is not None:
+    if nombre is not None  and email is not None:
 
         if not es_valido_email(email):
             return Response({'mensaje': 'Correo ingresado no valido.', "error": True}, status=200)
         
-        if not es_valido_password(password):
-            return Response({'mensaje': 'La contrasena no cumple los requisitos para que sea valida.', "error": True}, status=200)
+        try:
+            usuario = Usuario.objects.get(id_usuario=mensaje)
+        except ObjectDoesNotExist:
+            return Response({'mensaje': 'Error, el usuario no existe en la base de datos.', "error": True}, status=200)
         
-        if not es_valido_matricula(matricula):
-            return Response({'mensaje': 'La matricula no cumple los requisitos para que sea valida.', "error": True}, status=200)
-        
-        password_encriptada = make_password(password)
 
-        nuevo_usuario = Usuario(id_usuario=mensaje, password=password_encriptada, email=email, nombre=nombre, matricula=matricula)
+        usuario.nombre = nombre
+        usuario.email = email
 
-        nuevo_usuario.save()
+        usuario.save()
    
         return Response({'mensaje': 'Los datos del usuario fueron actualizados correctamente', "error": False}, status=200)
 

@@ -210,7 +210,6 @@ def actualizarAsesor(request):
     nombre = request.data.get('nombre')
     idioma = request.data.get('idioma')
     email = request.data.get('email')
-    password = request.data.get('password')
     token = request.data.get('token')
 
     valido, mensaje = verificarTokenAsesor(token)
@@ -222,20 +221,17 @@ def actualizarAsesor(request):
         if not es_valido_email(email):
             return Response({'mensaje': 'Correo ingresado no valido.', "error": True}, status=200)
 
-        if not es_valido_password(password):
-            return Response({'mensaje': 'La contrasena no cumple los requisitos para que sea valida.', "error": True}, status=200)
-        
         try:
             asesor = Asesor.objects.get(id_asesor=mensaje)
         except ObjectDoesNotExist:
             return Response({'mensaje': 'Error, el asesor no existe en la base de datos.', "error": True}, status=200)
         
 
-            
-            
-        nuevo_asesor = Asesor(id_asesor=asesor.id_asesor, password=password, email=email, nombre=nombre, idioma=idioma,  fotoBase64=asesor.fotoBase64)
-
-        nuevo_asesor.save()
+        asesor.nombre = nombre
+        asesor.idioma = idioma
+        asesor.email = email
+     
+        asesor.save()
    
         return Response({'mensaje': 'Los datos del usuario fueron actualizados correctamente', "error": False}, status=200)
 
