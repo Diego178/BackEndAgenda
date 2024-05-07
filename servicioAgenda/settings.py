@@ -1,6 +1,7 @@
 
 from pathlib import Path
 from dotenv import load_dotenv
+import dj_database_url
 import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -63,15 +64,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'servicioAgenda.wsgi.application'
 
+
+
+DATABASE_URL = os.environ.get('JAWSDB_URL')
+db_from_env = dj_database_url.config(default=DATABASE_URL)
+
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": os.environ.get('NAME'),
-        "USER": os.environ.get('USER'),
-        "PASSWORD": os.environ.get('PASSWORD'),
-        "HOST": os.environ.get('HOST'),
-        "PORT": os.environ.get('PORT')
-    }
+    'default': db_from_env
 }
 
 AUTH_PASSWORD_VALIDATORS = [

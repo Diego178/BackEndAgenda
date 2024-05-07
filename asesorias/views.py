@@ -39,6 +39,7 @@ def obtenerAsesoriasAsesor(request):
     return Response(data, status=200)
 
 
+
 @api_view(['POST'])
 def obtenerAsesoriasUsuario(request):
     # Obtener los datos de la peticion
