@@ -12,3 +12,4 @@ numpy==1.26.4
 PyJWT==2.8.0
 python-dotenv==1.0.1
 reportlab==4.2.0
+psycopg2==2.9.9
