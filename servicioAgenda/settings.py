@@ -13,7 +13,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 
 DEBUG = False
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -87,11 +87,12 @@ AUTH_PASSWORD_VALIDATORS = [
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
+    "http://172.29.112.1:3000",
+    "http://localhost:5173",
     "https://front-end-agenda-4hb0gxees-afabri24s-projects.vercel.app",
     "https://front-end-agenda.vercel.app",
     "https://front-end-agenda-afabri24-afabri24s-projects.vercel.app",
-    "https://front-end-agenda-bkbsifmom-afabri24s-projects.vercel.app",
-    "https://front-end-agenda-qzjyke5pz-afabri24s-projects.vercel.app",
+    "https://front-end-agenda-bkbsifmom-afabri24s-projects.vercel.app"
 ]
 
 
