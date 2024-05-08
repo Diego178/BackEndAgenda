@@ -24,10 +24,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'rest_framework',
-    'autenticacion',
-    'asesores',
-    'usuarios',
-    'asesorias',
     'servicioAgenda',
 ]
 
@@ -146,4 +142,3 @@ LOGGING = {
         },
     },
 }
-

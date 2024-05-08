@@ -4,11 +4,16 @@ from django.conf import settings
 from django.conf.urls.static import static
 #from .reporte import ReporteView
 
+from .Modules.Autenticacion import urls as autenticacion_urls
+from .Modules.Asesorias import urls as asesorias_urls
+from .Modules.Asesores import urls as asesores_urls
+from .Modules.Usuarios import urls as usuarios_urls
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/autenticacion/', include('autenticacion.urls')),
-    path('api/asesores/', include('asesores.urls')),
-    path('api/usuarios/', include('usuarios.urls')),
-    path('api/asesorias/', include('asesorias.urls')),
+    path('api/autenticacion/', include(autenticacion_urls)),
+    path('api/asesores/', include(asesores_urls)),
+    path('api/usuarios/', include(usuarios_urls)),
+    path('api/asesorias/', include(asesorias_urls)),
     #path('reporte/', ReporteView.as_view(), name='reporte')
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

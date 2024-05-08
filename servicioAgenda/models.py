@@ -51,6 +51,7 @@ class Asesoria(models.Model):
     tipo = models.CharField(max_length=10)
     tema = models.CharField(max_length=200)
     fecha = models.DateField()
+    escancelada = models.CharField(db_column='esCancelada', max_length=15, blank=True, null=True) 
     idasesor = models.ForeignKey(Asesor, models.CASCADE, db_column='idAsesor', blank=True, null=True)  # Field name made lowercase.
     iddiahora = models.ForeignKey(Diahora, models.CASCADE, db_column='idDiaHora', blank=True, null=True)  # Field name made lowercase.
     idusuario = models.ForeignKey(Usuario, models.CASCADE, db_column='idUsuario', blank=True, null=True)  # Field name made lowercase.
@@ -58,3 +59,14 @@ class Asesoria(models.Model):
     class Meta:
         managed = False
         db_table = 'asesoria'
+
+class Datosreunionvirtual(models.Model):
+    id_datosreunion = models.AutoField(primary_key=True)
+    url = models.CharField(db_column='URL', max_length=150, blank=True, null=True)  # Field name made lowercase.
+    password = models.CharField(max_length=15, blank=True, null=True)
+    id_reunion = models.CharField(max_length=20, blank=True, null=True)
+    idasesor = models.ForeignKey(Asesor, models.CASCADE, db_column='idAsesor', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'datosreunionvirtual'

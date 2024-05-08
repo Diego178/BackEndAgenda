@@ -1,11 +1,11 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from asesores.models import Asesor, Curso
-from asesores.serializers import CursoSerializer
+from ...models import Asesor, Curso
+from ...serializers import CursoSerializer
 from utils.validadores import es_valido_email, es_valido_matricula, es_valido_password
-from .models import Usuario
-from .serializers import UsuarioSerializer
+from ...models import Usuario
+from ...serializers import UsuarioSerializer
 from servicioAgenda.authentication import verificarTokenUsuario
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.hashers import make_password

@@ -1,1 +1,1 @@
-web: gunicorn servicioAgenda.wsgi --log-file -
+web: python manage.py migrate && gunicorn servicioAgenda.wsgi --log-file -

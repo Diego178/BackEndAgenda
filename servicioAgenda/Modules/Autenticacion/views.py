@@ -2,8 +2,10 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from servicioAgenda.authentication import crearToken
-from .models import Usuario, Asesor
-from .serializers import UsuarioSerializer, AsesorSerializer
+from ...models import Usuario, Asesor
+from ...serializers import UsuarioSerializer, AsesorSerializer
+
+
 
 from django.contrib.auth.hashers import check_password
 

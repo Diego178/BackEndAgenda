@@ -1,8 +1,8 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .models import Asesoria, Asesor, Curso, Diahora, Usuario, Datosreunionvirtual
+from ...models import Asesoria, Asesor, Curso, Diahora, Usuario, Datosreunionvirtual
 from django.core.exceptions import ObjectDoesNotExist
-from .serializers import DiaHoraSerializer
+from ...serializers import DiaHoraSerializer
 from utils.validadores import es_dia_semana, validar_fecha
 from servicioAgenda.email import enviarCorreo
 from utils.validadores import validar_fecha

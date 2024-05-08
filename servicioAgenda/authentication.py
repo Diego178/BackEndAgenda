@@ -1,8 +1,8 @@
 import jwt
 from datetime import datetime, timedelta
 from utils.validadores import validar_tipo_usuario
-from asesores.models import Asesor
-from usuarios.models import Usuario
+from .models import Asesor
+from .models import Usuario
 
 def crearToken(id, tipo):
     return jwt.encode({
