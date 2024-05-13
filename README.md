@@ -135,4 +135,6 @@ falta refrescar asesorias al eliminar una asesoria en asesor y usuario
 datos zoom
 
 
+heroku logs --tail --app asesorias-cix
+
 
