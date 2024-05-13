@@ -105,7 +105,7 @@ def registrarDiaHora(request):
         if not es_hora_valida(hora_termino):
              return Response({'mensaje': 'Error, la hora de termino no es valida.', "error": True}, status=200)
             
-        nuevo_datos = Diahora(dia=dia, hora_inicio=hora_inicio, hora_termino=hora_termino, modalidad=modalidad, idasesor=asesor, eslibre=True, estado="activo")
+        nuevo_datos = Diahora(dia=dia, hora_inicio=hora_inicio, hora_termino=hora_termino, modalidad=modalidad, idasesor=asesor, eslibre=1, estado="activo")
 
         nuevo_datos.save()
    
