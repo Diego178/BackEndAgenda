@@ -11,7 +11,7 @@ load_dotenv()
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 
-DEBUG = False
+DEBUG = os.environ.get('DEBUG')
 
 ALLOWED_HOSTS = ['asesorias-cix-f7b9f257652b.herokuapp.com',
                  'front-end-agenda-afabri24-afabri24s-projects.vercel.app', 
