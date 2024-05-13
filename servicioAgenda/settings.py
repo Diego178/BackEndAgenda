@@ -13,7 +13,8 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['asesorias-cix-f7b9f257652b.herokuapp.com', 
+ALLOWED_HOSTS = ['asesorias-cix-f7b9f257652b.herokuapp.com',
+                 'front-end-agenda-afabri24-afabri24s-projects.vercel.app', 
                  'localhost', 
                  '127.0.0.1',
                  '172.29.112.1']
