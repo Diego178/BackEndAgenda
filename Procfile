@@ -1,1 +1,1 @@
-gunicorn servicioAgenda.wsgi --log-file -
+web: gunicorn servicioAgenda.wsgi --log-file -
