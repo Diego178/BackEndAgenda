@@ -43,7 +43,7 @@ def obtenerAsesoriasAsesor(request):
 @api_view(['POST'])
 def obtenerAsesoriasUsuario(request):
     # Obtener los datos de la peticion
-    token = request.data.get('token')
+    token = request.data.get("token")
 
     valido, mensaje = verificarTokenUsuario(token)
     if not valido:
@@ -268,6 +268,30 @@ def obtenerHorariosByDia(request):
         return Response({'mensaje': data, "error": False}, status=200)
     else:
         return Response({'mensaje': 'Bad request', "error": True}, status=400) 
+    
+@api_view(['POST'])
+def obtenerDiasConDisponibilidad(request):
+    modalidad = request.data.get('modalidad')
+    idAsesor = request.data.get('idAsesor')
+    token = request.data.get('token')
 
+    valido, mensaje = verificarTokenUsuario(token)
+    if not valido:
+        return Response({'mensaje': mensaje, "error": True}, status=401)
+    
+    if modalidad is not None and idAsesor is not None:
+        dias = ["lunes", "martes", "miercoles", "jueves", "viernes"]
+        dia_data = []
 
+        for dia in dias:
+            horarios = Diahora.objects.filter(idasesor=idAsesor, modalidad=modalidad, eslibre=1, estado="activo", dia=dia)
+            horarios_serializados = DiaHoraSerializer(horarios, many=True).data
+            dia_data.append({
+                "dia": dia.capitalize(),
+                "valor": dia,
+                "tieneHoras": len(horarios_serializados) > 0
+            })
 
+        return Response({'mensaje': dia_data, "error": False}, status=200)
+    else:
+        return Response({'mensaje': 'Bad request', "error": True}, status=400)

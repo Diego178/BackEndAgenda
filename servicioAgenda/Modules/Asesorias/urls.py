@@ -9,4 +9,5 @@ urlpatterns = [
     path('cancelarAsUsuario/', views.cancelarAsesoriaUsuario),
     path('cancelarAsAsesor/', views.cancelarAsesoriaAsesor),
     path('obtenerHorasByDia/', views.obtenerHorariosByDia),
+    path('obtenerDisponibilidadHorarios/', views.obtenerDiasConDisponibilidad),
 ]
