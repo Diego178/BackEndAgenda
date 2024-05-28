@@ -12,7 +12,7 @@ from servicioAgenda.authentication import verificarTokenAsesor, verificarTokenUs
 @api_view(['POST'])
 def obtenerAsesoriasAsesor(request):
     # Obtener los datos de la peticion
-    token = request.data.get('token')
+    token = request.META.get('HTTP_AUTHORIZATION')
 
     valido, mensaje = verificarTokenAsesor(token)
     if not valido:
@@ -43,7 +43,7 @@ def obtenerAsesoriasAsesor(request):
 @api_view(['POST'])
 def obtenerAsesoriasUsuario(request):
     # Obtener los datos de la peticion
-    token = request.data.get("token")
+    token = request.META.get('HTTP_AUTHORIZATION')
 
     valido, mensaje = verificarTokenUsuario(token)
     if not valido:
@@ -99,7 +99,7 @@ def registrarAsesoria(request):
     idAsesor = request.data.get('idAsesor')
     idDiaHora = request.data.get('idDiaHora')
     idCurso = request.data.get('idCurso')
-    token = request.data.get('token')
+    token = request.META.get('HTTP_AUTHORIZATION')
 
 
     valido, mensaje = verificarTokenUsuario(token)
@@ -153,7 +153,7 @@ def registrarAsesoria(request):
 def cancelarAsesoriaUsuario(request):
     # Obtener los datos de la peticion
     idAsesoria = request.data.get('id_asesoria')
-    token = request.data.get('token')
+    token = request.META.get('HTTP_AUTHORIZATION')
 
     valido, mensaje = verificarTokenUsuario(token)
     if not valido:
@@ -189,7 +189,8 @@ def cancelarAsesoriaUsuario(request):
 def cancelarAsesoriaAsesor(request):
     # Obtener los datos de la peticion
     idAsesoria = request.data.get('id_asesoria')
-    token = request.data.get('token')
+    token = request.META.get('HTTP_AUTHORIZATION')
+    
 
     valido, mensaje = verificarTokenAsesor(token)
     if not valido:
@@ -223,8 +224,8 @@ def cancelarAsesoriaAsesor(request):
 @api_view(['POST'])
 def obtenerHorariosByAsesor(request):
     dia = request.data.get('dia')
-    token = request.data.get('token')
-
+    token = request.META.get('HTTP_AUTHORIZATION')
+    print("Token: " + token)
     valido, mensaje = verificarTokenAsesor(token)
     if not valido:
         return Response({'mensaje': mensaje, "error": True}, status=401)
@@ -244,7 +245,7 @@ def obtenerHorariosByDia(request):
     dia = request.data.get('dia')
     modalidad = request.data.get('modalidad')
     idAsesor = request.data.get('idAsesor')
-    token = request.data.get('token')
+    token = request.META.get('HTTP_AUTHORIZATION')
 
     valido, mensaje = verificarTokenUsuario(token)
     if not valido:
@@ -273,7 +274,7 @@ def obtenerHorariosByDia(request):
 def obtenerDiasConDisponibilidad(request):
     modalidad = request.data.get('modalidad')
     idAsesor = request.data.get('idAsesor')
-    token = request.data.get('token')
+    token = request.META.get('HTTP_AUTHORIZATION')
 
     valido, mensaje = verificarTokenUsuario(token)
     if not valido:

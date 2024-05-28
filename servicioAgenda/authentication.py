@@ -14,6 +14,7 @@ def crearToken(id, tipo):
 
 
 def verificarToken(token):
+    token = token.split(' ')[1]
     try:
         # Decodificar el token
         payload = jwt.decode(token, 'access_secret', algorithms=['HS256'])
@@ -47,6 +48,7 @@ def verificarToken(token):
     
 
 def verificarTokenAsesor(token):
+    token = token.split(' ')[1]
     try:
         # Decodificar el token
         payload = jwt.decode(token, 'access_secret', algorithms=['HS256'])
@@ -78,6 +80,7 @@ def verificarTokenAsesor(token):
     
 
 def verificarTokenUsuario(token):
+    token = token.split(' ')[1]
     try:
         # Decodificar el token
         payload = jwt.decode(token, 'access_secret', algorithms=['HS256'])

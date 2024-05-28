@@ -49,7 +49,7 @@ def registrarUsuario(request):
 def actualizarUsuario(request):
     nombre = request.data.get('nombre')
     email = request.data.get('email')
-    token = request.data.get('token')
+    token = request.META.get('HTTP_AUTHORIZATION')
 
 
     valido, mensaje = verificarTokenUsuario(token)
@@ -79,7 +79,7 @@ def actualizarUsuario(request):
     
 @api_view(['POST'])
 def obtenerDatosUsuario(request):
-    token = request.data.get('token')
+    token = request.META.get('HTTP_AUTHORIZATION')
 
     valido, mensaje = verificarTokenUsuario(token)
     if not valido:
@@ -93,7 +93,7 @@ def obtenerDatosUsuario(request):
 
 @api_view(['POST'])
 def obtenerCursos(request):
-    token = request.data.get('token')
+    token = request.META.get('HTTP_AUTHORIZATION')
     idAsesor = request.data.get('idAsesor')
 
     valido, mensaje = verificarTokenUsuario(token)

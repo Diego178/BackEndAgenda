@@ -46,7 +46,7 @@ def registrarDatosReunionVirtual(request):
     password = request.data.get('password')
     id_reunion = request.data.get('id_reunion')
     idAsesor = request.data.get('idAsesor')
-    token = request.data.get('token')
+    token = request.META.get('HTTP_AUTHORIZATION')
 
 
     valido, mensaje = verificarTokenAsesor(token)
@@ -82,7 +82,7 @@ def registrarDiaHora(request):
     hora_inicio = request.data.get('hora_inicio')
     hora_termino = request.data.get('hora_termino')
     modalidad = request.data.get('modalidad')
-    token = request.data.get('token')
+    token = request.META.get('HTTP_AUTHORIZATION')
 
     valido, mensaje = verificarTokenAsesor(token)
     if not valido:
@@ -122,7 +122,7 @@ def actuaizarHoraDia(request):
     hora_termino = request.data.get('hora_termino')
     modalidad = request.data.get('modalidad')
     estado = request.data.get('estado')
-    token = request.data.get('token')
+    token = request.META.get('HTTP_AUTHORIZATION')
 
     valido, mensaje = verificarTokenAsesor(token)
     if not valido:
@@ -166,7 +166,7 @@ def actuaizarHoraDia(request):
 @api_view(['DELETE'])
 def eliminarHoraDia(request):
     id_dia_hora = request.data.get('id_diahora')
-    token = request.data.get('token')
+    token = request.META.get('HTTP_AUTHORIZATION')
 
     valido, mensaje = verificarTokenAsesor(token)
     if not valido:
@@ -193,7 +193,7 @@ def eliminarHoraDia(request):
 
 @api_view(['POST'])
 def obtenerDatosAsesor(request):
-    token = request.data.get('token')
+    token = request.META.get('HTTP_AUTHORIZATION')
 
     valido, mensaje = verificarTokenAsesor(token)
     if not valido:
@@ -210,7 +210,7 @@ def actualizarAsesor(request):
     nombre = request.data.get('nombre')
     idioma = request.data.get('idioma')
     email = request.data.get('email')
-    token = request.data.get('token')
+    token = request.META.get('HTTP_AUTHORIZATION')
 
     valido, mensaje = verificarTokenAsesor(token)
     if not valido:
@@ -240,7 +240,7 @@ def actualizarAsesor(request):
 
 @api_view(['POST'])
 def obtenerCursosAsesor(request):
-    token = request.data.get('token')
+    token = request.META.get('HTTP_AUTHORIZATION')
 
     valido, mensaje = verificarTokenAsesor(token)
     if not valido:
@@ -258,7 +258,7 @@ def obtenerCursosAsesor(request):
 
 @api_view(['POST'])
 def registrarCurso(request):
-    token = request.data.get('token')
+    token = request.META.get('HTTP_AUTHORIZATION')
     nombre = request.data.get('nombre')
 
     valido, mensaje = verificarTokenAsesor(token)
@@ -286,7 +286,7 @@ def registrarCurso(request):
 @api_view(['DELETE'])
 def eliminarCurso(request):
     idCurso = request.data.get('idCurso')
-    token = request.data.get('token')
+    token = request.META.get('HTTP_AUTHORIZATION')
 
     valido, mensaje = verificarTokenAsesor(token)
     if not valido:
@@ -359,7 +359,7 @@ def actualizarAsesorCRUD(request):
     idioma = request.data.get('idioma')
     email = request.data.get('email')
     password = request.data.get('password')
-    token = request.data.get('token')
+    token = request.META.get('HTTP_AUTHORIZATION')
 
     valido, mensaje = verificarTokenAsesor(token)
     if not valido:
@@ -384,7 +384,7 @@ def actualizarAsesorCRUD(request):
 
 @api_view(['POST'])
 def obtenerDatosReunionAsesoria(request):
-    token = request.data.get('token')
+    token = request.META.get('HTTP_AUTHORIZATION')
 
     valido, mensaje = verificarTokenAsesor(token)
     if not valido:
@@ -412,7 +412,7 @@ def actualizarDatosReunionAsesoria(request):
     url = request.data.get('url')
     password = request.data.get('password')
     id_datosreunion = request.data.get('id_datosreunion')
-    token = request.data.get('token')
+    token = request.META.get('HTTP_AUTHORIZATION')
 
     valido, mensaje = verificarTokenAsesor(token)
     if not valido:
