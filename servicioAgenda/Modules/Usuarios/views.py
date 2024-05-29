@@ -1,7 +1,7 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from ...models import Asesor, Curso
+from ...models import Asesor, Curso, Idioma
 from ...serializers import CursoSerializer
 from utils.validadores import es_valido_email, es_valido_matricula, es_valido_password
 from ...models import Usuario
@@ -107,4 +107,46 @@ def obtenerCursos(request):
     serializer = CursoSerializer(cursos, many=True)
 
     return Response({'mensaje': serializer.data, "error": False}, status=200)
+
+@api_view(['POST'])
+def obtenerIdiomas(request):
+    token= request.META.get('HTTP_AUTHORIZATION')
     
+    valido, mensaje = verificarTokenUsuario(token)
+    if not valido:
+        return Response({'mensaje': mensaje, "error": True}, status=401)
+    
+    idiomas = Idioma.objects.filter(id_usuario=mensaje).values('id_idioma', 'idioma')
+    return Response({'mensaje': idiomas, "error": False}, status=200)
+
+@api_view(['POST'])
+def agregarIdioma(request):
+    token = request.META.get('HTTP_AUTHORIZATION')
+    idioma = request.data.get('idioma')
+
+    valido, mensaje = verificarTokenUsuario(token)
+    if not valido:
+        return Response({'mensaje': mensaje, "error": True}, status=401)
+    
+    if idioma is not None:
+        nuevo_idioma = Idioma(id_usuario_id=mensaje, idioma=idioma)
+        nuevo_idioma.save()
+        return Response({'mensaje': 'Idioma agregado correctamente.', "error": False}, status=200)
+    else:
+        return Response({'mensaje': 'Bad request', "error": True}, status=400)
+    
+@api_view(['DELETE'])
+def eliminarIdioma(request):
+    token = request.META.get('HTTP_AUTHORIZATION')
+    id_idioma = request.data.get('id_idioma')
+    
+    valido, mensaje = verificarTokenUsuario(token)
+    if not valido:
+        return Response({'mensaje': mensaje, "error": True}, status=401)
+    
+    if id_idioma is not None:
+        idioma = Idioma.objects.get(id_idioma=id_idioma)
+        idioma.delete()
+        return Response({'mensaje': 'Idioma eliminado correctamente.', "error": False}, status=200)
+    else:
+        return Response({'mensaje': 'Bad request', "error": True}, status=400)
