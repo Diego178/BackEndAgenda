@@ -58,6 +58,9 @@ class Asesoria(models.Model):
     iddiahora = models.ForeignKey(Diahora, models.CASCADE, db_column='idDiaHora', blank=True, null=True)  # Field name made lowercase.
     idusuario = models.ForeignKey(Usuario, models.CASCADE, db_column='idUsuario', blank=True, null=True)  # Field name made lowercase.
     idcurso = models.ForeignKey(Curso, models.CASCADE, db_column='idCurso', blank=True, null=True)
+    asistio = models.IntegerField(blank=True, null=True)
+    comentario = models.CharField(max_length=255, blank=True, null=True)
+    
     class Meta:
         managed = False
         db_table = 'asesoria'
@@ -72,6 +75,16 @@ class Datosreunionvirtual(models.Model):
     class Meta:
         managed = False
         db_table = 'datosreunionvirtual'
+        
+class Idioma(models.Model):
+    id_idioma = models.AutoField(primary_key=True)
+    id_usuario = models.ForeignKey(Usuario, models.CASCADE, db_column='id_usuario', blank=True, null=True) 
+    idioma = models.CharField(max_length=255)
+
+    class Meta:
+        managed = False
+        db_table = 'idioma'
+
 
 class Admin(models.Model):
     id = models.AutoField(primary_key=True)

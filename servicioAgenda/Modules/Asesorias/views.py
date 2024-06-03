@@ -74,7 +74,9 @@ def obtenerAsesoriasUsuario(request):
                 'curso': asesoria.idcurso.nombrecurso,
                 'modalidad': asesoria.iddiahora.modalidad,
                 'escancelada': asesoria.escancelada,
-                'color': color
+                'color': color,
+                'comentario': asesoria.comentario,
+                'asistio': asesoria.asistio
             }
             data.append(asesoria_data)
         else:
@@ -91,6 +93,8 @@ def obtenerAsesoriasUsuario(request):
                 'modalidad': asesoria.iddiahora.modalidad,
                 'escancelada': asesoria.escancelada,
                 'color': color,
+                'comentario': asesoria.comentario,
+                'asistio': asesoria.asistio
             }
             data.append(asesoria_data)
 
@@ -161,6 +165,7 @@ def cancelarAsesoriaUsuario(request):
     # Obtener los datos de la peticion
     idAsesoria = request.data.get('id_asesoria')
     token = request.META.get('HTTP_AUTHORIZATION')
+    comentario = request.data.get('comentario')
 
     valido, mensaje = verificarTokenUsuario(token)
     if not valido:
@@ -185,6 +190,7 @@ def cancelarAsesoriaUsuario(request):
     diaHora.eslibre = 1;
     diaHora.save()
     asesoria_eliminar.escancelada = 1;
+    asesoria_eliminar.comentario = comentario;
     asesoria_eliminar.save()
     
 
@@ -197,6 +203,7 @@ def cancelarAsesoriaAsesor(request):
     # Obtener los datos de la peticion
     idAsesoria = request.data.get('id_asesoria')
     token = request.META.get('HTTP_AUTHORIZATION')
+    comentario = request.data.get('comentario')
     
 
     valido, mensaje = verificarTokenAsesor(token)
@@ -222,6 +229,7 @@ def cancelarAsesoriaAsesor(request):
     diaHora.eslibre = 1;
     diaHora.save()
     asesoria_eliminar.escancelada = 1;
+    asesoria_eliminar.comentario = comentario;
     asesoria_eliminar.save()
     
 
