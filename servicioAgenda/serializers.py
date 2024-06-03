@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Asesoria, Datosreunionvirtual, Diahora, Usuario, Asesor, Curso
+from .models import Admin, Asesoria, Datosreunionvirtual, Diahora, Usuario, Asesor, Curso
 
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
@@ -51,3 +51,8 @@ class DatosReunionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Datosreunionvirtual
         fields = '__all__'
+        
+class AdminSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Admin
+        fields = ['id', 'nombre']

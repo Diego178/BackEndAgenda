@@ -7,6 +7,8 @@ from utils.validadores import es_dia_semana, validar_fecha
 from servicioAgenda.email import enviarCorreo
 from utils.validadores import validar_fecha
 from servicioAgenda.authentication import verificarTokenAsesor, verificarTokenUsuario
+from datetime import datetime
+from servicioAgenda.utils import obtenerColor
 
 
 @api_view(['POST'])
@@ -44,6 +46,7 @@ def obtenerAsesoriasAsesor(request):
 def obtenerAsesoriasUsuario(request):
     # Obtener los datos de la peticion
     token = request.META.get('HTTP_AUTHORIZATION')
+    print("Token: " + token)
 
     valido, mensaje = verificarTokenUsuario(token)
     if not valido:
@@ -52,11 +55,13 @@ def obtenerAsesoriasUsuario(request):
     asesorias = Asesoria.objects.filter(idusuario=mensaje)
     data = []
     for asesoria in asesorias:
+        tipo = asesoria.tipo.capitalize()
+        color = obtenerColor(asesoria.escancelada, asesoria.asistio, asesoria.fecha)
         if asesoria.iddiahora.modalidad == 'virtual':
             datos_reunion = Datosreunionvirtual.objects.get(idasesor=asesoria.idasesor)
             asesoria_data = {
                 'id_asesoria': asesoria.id_asesoria,
-                'tipo': asesoria.tipo,
+                'tipo': tipo,
                 'nombre_asesor': asesoria.idasesor.nombre,
                 'fecha': asesoria.fecha,
                 'tema': asesoria.tema,
@@ -68,13 +73,14 @@ def obtenerAsesoriasUsuario(request):
                 'id_reunion': datos_reunion.id_reunion,
                 'curso': asesoria.idcurso.nombrecurso,
                 'modalidad': asesoria.iddiahora.modalidad,
-                'escancelada': asesoria.escancelada
+                'escancelada': asesoria.escancelada,
+                'color': color
             }
             data.append(asesoria_data)
         else:
             asesoria_data = {
                 'id_asesoria': asesoria.id_asesoria,
-                'tipo': asesoria.tipo,
+                'tipo': tipo,
                 'nombre_asesor': asesoria.idasesor.nombre,
                 'fecha': asesoria.fecha,
                 'tema': asesoria.tema,
@@ -83,7 +89,8 @@ def obtenerAsesoriasUsuario(request):
                 'hora_termino': asesoria.iddiahora.hora_termino,
                 'curso': asesoria.idcurso.nombrecurso,
                 'modalidad': asesoria.iddiahora.modalidad,
-                'escancelada': asesoria.escancelada
+                'escancelada': asesoria.escancelada,
+                'color': color,
             }
             data.append(asesoria_data)
 
@@ -281,10 +288,22 @@ def obtenerDiasConDisponibilidad(request):
         return Response({'mensaje': mensaje, "error": True}, status=401)
     
     if modalidad is not None and idAsesor is not None:
+        hoy = datetime.now()
+        dia_semana_actual = hoy.weekday()
+        
         dias = ["lunes", "martes", "miercoles", "jueves", "viernes"]
         dia_data = []
-
-        for dia in dias:
+        
+        
+        if dia_semana_actual < 4:  # Si es viernes (4) o sábado (5) o domingo (6) # Si es un día de entre semana (lunes a jueves)
+            diasArray = []
+            dia_semana_actual = dia_semana_actual + 1
+            for i in range(5 - dia_semana_actual ):  # 5 - dia_semana_actual nos da los días restantes de la semana laboral
+                dia_index = (dia_semana_actual + i) % 7
+                diasArray.append(dias[dia_index])
+        else:
+            diasArray = dias;
+        for dia in diasArray:
             horarios = Diahora.objects.filter(idasesor=idAsesor, modalidad=modalidad, eslibre=1, estado="activo", dia=dia)
             horarios_serializados = DiaHoraSerializer(horarios, many=True).data
             dia_data.append({

@@ -45,7 +45,6 @@ def registrarDatosReunionVirtual(request):
     url = request.data.get('url')
     password = request.data.get('password')
     id_reunion = request.data.get('id_reunion')
-    idAsesor = request.data.get('idAsesor')
     token = request.META.get('HTTP_AUTHORIZATION')
 
 
@@ -53,16 +52,16 @@ def registrarDatosReunionVirtual(request):
     if not valido:
         return Response({'mensaje': mensaje, "error": True}, status=401)
 
-    if url is not None and id_reunion is not None and password is not None and idAsesor is not None:
+    if url is not None and id_reunion is not None and password is not None:
         regexURL = r'^(https?|ftp):\/\/[^\s\/$.?#].[^\s]*$'
 
         if not re.match(regexURL, url):
             return Response({'mensaje': 'El enlace para la reunion virtual no es valido', "error": True}, status=200)
         
-        if Datosreunionvirtual.objects.filter(idasesor=idAsesor).exists():
+        if Datosreunionvirtual.objects.filter(idasesor=mensaje).exists():
             return Response({'mensaje': 'Error el asesor ya cuenta con datos para su reunion virtual.', "error": True}, status=200)
         try:
-            asesor = Asesor.objects.get(id_asesor=idAsesor)
+            asesor = Asesor.objects.get(id_asesor=mensaje)
         except ObjectDoesNotExist:
             return Response({'mensaje': 'Error, el asesor no existe en la base de datos.', "error": True}, status=200)    
             
@@ -313,10 +312,24 @@ def eliminarCurso(request):
 
 @api_view(['GET'])
 def obtenerAsesores(request):
-    
-    asesor = Asesor.objects.all()
 
-    serializer = AsesorSerializerGET(asesor, many=True)
+    asesores = Asesor.objects.all()
+
+    serializer = AsesorSerializerGET(asesores, many=True)
+
+    return Response({'mensaje': serializer.data, "error": False}, status=200)
+
+@api_view(['GET'])
+def obtenerAsesoresAdmin(request):
+    token = request.META.get('HTTP_AUTHORIZATION')
+
+    valido, mensaje = verificarTokenAsesor(token)
+    if not valido:
+        return Response({'mensaje': mensaje, "error": True}, status=401)
+
+    asesores = Asesor.objects.all()
+
+    serializer = AsesorSerializer(asesores, many=True)
 
     return Response({'mensaje': serializer.data, "error": False}, status=200)
 
@@ -435,3 +448,4 @@ def actualizarDatosReunionAsesoria(request):
 
     else:
         return Response({'mensaje': 'Bad request', "error": True}, status=400)
+

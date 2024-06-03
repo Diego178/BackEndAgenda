@@ -1,9 +1,9 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from servicioAgenda.authentication import crearToken
-from ...models import Usuario, Asesor
-from ...serializers import UsuarioSerializer, AsesorSerializer
+from servicioAgenda.authentication import crearToken, crearTokenAdmin
+from ...models import Admin, Usuario, Asesor
+from ...serializers import AdminSerializer, UsuarioSerializer, AsesorSerializer
 
 
 
@@ -54,4 +54,25 @@ def login(request):
                 'usuario': serializer.data,
                 'token': crearToken(usuario.id_usuario, tipo),
                 "error": False}, status=200)
+            
+@api_view(['POST'])
+def loginAdmin(request):
+    # Obtener los datos de la peticion
+    email = request.data.get('email')
+    password = request.data.get('password')
+    # Validar que no vengan nulos
+    if email is not None and password is not None:
+        try:
+            admin = Admin.objects.get(email=email, password=password)
+            print(admin.nombre)
+            serializer = AdminSerializer(admin)
+            return Response( {
+                'tipo': 'admin',
+                'usuario': serializer.data,
+                'token': crearTokenAdmin(admin.id),
+                "error": False}, status=200)
+        except Admin.DoesNotExist:
+                return Response({'mensaje': 'No se encontró ningúna cuenta con las credenciales proporcionadas', "error": True}, status=200)
+        except Exception as e:
+            return Response({'mensaje': 'Ocurrió un error inesperado: {}'.format(e), "error": True}, status=500)
             
