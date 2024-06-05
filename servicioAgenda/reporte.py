@@ -12,11 +12,12 @@ from rest_framework import status
 import os
 from reportlab.pdfgen import canvas
 from reportlab.lib import colors
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle,LongTable
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle,LongTable, Paragraph
 from datetime import date, timedelta
 from io import BytesIO
 from django.http import FileResponse
 from servicioAgenda.authentication import verificarTokenAsesor
+from django.http import HttpResponse
 
 
 def get_joined_data():
@@ -85,32 +86,51 @@ def get_joined_data_for_asesor(asesor_id,mes):
 
 # Quiero mostrar en txt las asesorias
 def export_to_txt(data, filename):
-    # # Crear un objeto BytesIO
-    # buffer = BytesIO()
-    
-    # with open(filename, 'w') as file:
-    #     for asesoria in data:
-    #         file.write(f'{asesoria["id_asesoria"]}, {asesoria["tipo"]}, {asesoria["tema"]}, {asesoria["fecha"]}, {asesoria["fue cancelada"]}, {asesoria["Nombre asesor"]}, {asesoria["Nombre Usuario"]}, {asesoria["dia"]}, {asesoria["hora inicio"]}, {asesoria["hora termino"]}, {asesoria["idcurso"]}, {asesoria["asistio"]}, {asesoria["comentario de cancelacion"]}\n')
-            
-    # # Obtener el valor del objeto BytesIO
-    # txt_data = buffer.getvalue()
-    
-    # # Crear una respuesta con el TXT
-    # response = FileResponse(BytesIO(txt_data), as_attachment=True, filename='report.txt')
-    
-    # return response       
+    # Crear un objeto BytesIO
+    buffer = BytesIO()
     
     with open(filename, 'w') as file:
         for asesoria in data:
             file.write(f'{asesoria["id_asesoria"]}, {asesoria["tipo"]}, {asesoria["tema"]}, {asesoria["fecha"]}, {asesoria["fue cancelada"]}, {asesoria["Nombre asesor"]}, {asesoria["Nombre Usuario"]}, {asesoria["dia"]}, {asesoria["hora inicio"]}, {asesoria["hora termino"]}, {asesoria["idcurso"]}, {asesoria["asistio"]}, {asesoria["comentario de cancelacion"]}\n')
+            
+    # Obtener el valor del objeto BytesIO
+    txt_data = buffer.getvalue()
+    
+    # Crear una respuesta con el TXT
+    response = FileResponse(BytesIO(txt_data), as_attachment=True, filename='report.txt')
+    
+    return response       
    
 
 def export_to_pdf(data, filename,mes):
     # Crear un objeto BytesIO
     buffer = BytesIO()
     
-    c = SimpleDocTemplate(filename, pagesize=landscape(letter))
+    c = SimpleDocTemplate(buffer, pagesize=landscape(letter))
     story = []
+    
+    if data == []:
+        header = [['No tuvo asesorias este mes']]
+        # Crear la tabla
+        table1 = Table(header)
+        
+        style1 = TableStyle([
+            ('BACKGROUND', (0,0), (-1,0), colors.white),
+            ('TEXTCOLOR',(0,0),(-1,0),colors.black),
+            ('ALIGN',(0,0),(-1,-1),'CENTER'),
+            ('FONTNAME', (0,0), (-1,0), 'Helvetica-Bold'),
+            ('FONTSIZE', (0,0), (-1,0), 16),
+            ('BOTTOMPADDING', (0,0), (-1,0), 10),
+            ('BACKGROUND',(0,1),(-1,-1),colors.white),
+            ('GRID',(0,0),(-1,-1),1,colors.white)
+        ])
+        
+        table1.setStyle(style1)
+        
+        story.append(table1)
+        c.build(story)
+        buffer.seek(0)
+        return FileResponse(buffer, as_attachment=True, filename=filename)
     
     today = date.today()
     d1 = today.strftime("%d/%m/%Y")
@@ -140,7 +160,7 @@ def export_to_pdf(data, filename,mes):
         mes_reporte = ' Noviembre'
     elif mes == 12:
         mes_reporte = ' Diciembre'
-    header = [['Reporte de asesorias'+mes_reporte, 'Nombre del asesor: '+data[0]['Nombre asesor'], "Fecha: "+d1]]
+    header = [['Reporte de asesorias del mes: '+mes_reporte, 'Nombre del asesor: '+data[0]['Nombre asesor'], "Fecha: "+d1]]
     
     #para hacer pruebas que se desborda la segunda tabla voy a agregar rows en el encabezado
     #for i in range(0, 20):
@@ -192,14 +212,10 @@ def export_to_pdf(data, filename,mes):
     story.append(table)
     c.build(story)
     
+    buffer.seek(0)
+
+    return FileResponse(buffer, as_attachment=True, filename=filename)
     
-    # Obtener el valor del objeto BytesIO
-    pdf = buffer.getvalue()
-
-    # Crear una respuesta con el PDF
-    response = FileResponse(BytesIO(pdf), as_attachment=True, filename='report.pdf')
-
-    return response
     
 
 def export_to_csv(data, filename):
@@ -237,7 +253,7 @@ def export_to_excel(data, filename):
 
 
 class ReporteView(APIView):
-    def post(self, request, format=None):
+    def put(self, request, format=None):
         tipo = request.data.get('tipo')
         token = request.META.get('HTTP_AUTHORIZATION')
         mes=request.data.get('mes')
@@ -250,20 +266,46 @@ class ReporteView(APIView):
         
         #Quiero mostrar todos los datos asesorias
         asesorias = list(get_joined_data_for_asesor(idAsesor,mes))
+        
+        
+        if mes == 1:
+            mes_reporte = ' Enero'
+        elif mes == 2:
+            mes_reporte = ' Febrero'
+        elif mes == 3:
+            mes_reporte = ' Marzo'
+        elif mes == 4:
+            mes_reporte = ' Abril'
+        elif mes == 5:
+            mes_reporte = ' Mayo'
+        elif mes == 6:
+            mes_reporte = ' Junio'
+        elif mes == 7:
+            mes_reporte = ' Julio'
+        elif mes == 8:
+            mes_reporte = ' Agosto'
+        elif mes == 9:
+            mes_reporte = ' Septiembre'
+        elif mes == 10:
+            mes_reporte = ' Octubre'
+        elif mes == 11:
+            mes_reporte = ' Noviembre'
+        elif mes == 12:
+            mes_reporte = ' Diciembre'
+            
 
         if tipo == 'pdf':
-            filename = 'reporte'+mes+mensaje+'.pdf'
-            return export_to_pdf(asesorias, filename)
+            filename = 'reporte'+mes_reporte+'.pdf'
+            return export_to_pdf(asesorias, filename,mes)
         elif tipo == 'csv':
-            filename = 'reporte'+mes+mensaje+'.pdf'
+            filename = 'reporte'+mes_reporte+'.csv'
             return export_to_csv(asesorias, filename)
         elif tipo == 'xlsx':
-            filename = 'reporte'+mes+mensaje+'.pdf'
+            filename = 'reporte'+mes_reporte+'.xlsx'
             return export_to_excel(asesorias, filename)
         elif tipo == 'txt':
-            filename = 'reporte'+mes+mensaje+'.pdf'
-            # return export_to_txt(asesorias, filename) 
-            export_to_txt(asesorias, filename)
+            filename = 'reporte'+mes_reporte+'.txt'
+            return export_to_txt(asesorias, filename) 
         else:
             return Response({'error': 'Tipo de archivo no soportado'}, status=status.HTTP_400_BAD_REQUEST)
 
