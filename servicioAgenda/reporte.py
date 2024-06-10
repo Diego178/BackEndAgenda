@@ -14,7 +14,7 @@ from reportlab.pdfgen import canvas
 from reportlab.lib import colors
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle,LongTable, Paragraph
 from datetime import date, timedelta
-from io import BytesIO
+from io import BytesIO, StringIO
 from django.http import FileResponse
 from servicioAgenda.authentication import verificarTokenAsesor
 from django.http import HttpResponse
@@ -219,20 +219,19 @@ def export_to_pdf(data, filename,mes):
     
 
 def export_to_csv(data, filename):
-    # Crear un objeto BytesIO
-    buffer = BytesIO()
+    # Crear un objeto StringIO
+    buffer = StringIO()
 
-    # Escribir los datos en el objeto BytesIO
+    # Escribir los datos en el objeto StringIO
     writer = csv.DictWriter(buffer, fieldnames=data[0].keys())
     writer.writeheader()
     writer.writerows(data)
 
-    # Obtener el valor del objeto BytesIO
+    # Obtener el valor del objeto StringIO
     csv_data = buffer.getvalue()
 
     # Crear una respuesta con el CSV
-    response = FileResponse(BytesIO(csv_data), as_attachment=True, filename='report.csv')
-
+    response = FileResponse(BytesIO(csv_data.encode()), as_attachment=True, filename='report.csv')
     return response
 
 def export_to_excel(data, filename):
