@@ -138,20 +138,20 @@ datos zoom
 heroku logs --tail --app asesorias-cix
 
 Observciones:
-- agregar inasistencia 
+-agregar inasistencia
 limitar una asesoria por dia
 Revisar porque no se envian los correos a uv.mx
-- filtro cuando se quiera seleccionar al asesor
-- acabar reporte 
-- editar tambien foto al actualizar datos del asesor
+-filtro cuando se quiera seleccionar al asesor
+-acabar reporte
+-editar tambien foto al actualizar datos del asesor
 agregar estado de las asesorias en las tarjetas por colores
 -azul, pendiente
+
 -naranja, sin agregar asistencia
 -roja, cancelada
 -verde, asesoria pasada con asistencia
 
 sudo /usr/local/mysql/support-files/mysql.server start
 sudo /usr/local/mysql/support-files/mysql.server status
-
 
 'django.core.mail.backends.smtp.EmailBackend'
