@@ -11,6 +11,8 @@ class AsesorSerializer(serializers.ModelSerializer):
         model = Asesor
         fields = '__all__'
 
+
+
 class DatosReunionVirtualSerializer(serializers.ModelSerializer):
     class Meta:
         model = Datosreunionvirtual
@@ -56,3 +58,13 @@ class AdminSerializer(serializers.ModelSerializer):
     class Meta:
         model = Admin
         fields = ['id', 'nombre']
+        
+class AsesorSerializerGETAdmin(serializers.ModelSerializer):
+    fotoBase64 = serializers.SerializerMethodField()
+    class Meta:
+        model = Asesor
+        fields = fields = ['id_asesor', 'nombre', 'idioma', 'fotoBase64', 'email']
+    def get_fotoBase64(self, obj):
+        if obj.fotoBase64:
+            return obj.fotoBase64.decode('utf-8')
+        return None

@@ -323,3 +323,22 @@ def obtenerDiasConDisponibilidad(request):
         return Response({'mensaje': dia_data, "error": False}, status=200)
     else:
         return Response({'mensaje': 'Bad request', "error": True}, status=400)
+
+
+@api_view(['POST'])
+def verificarDisponibilidadDia(request):
+    dia = request.data.get('dia')
+    token = request.META.get('HTTP_AUTHORIZATION')
+
+    valido, mensaje = verificarTokenUsuario(token)
+    if not valido:
+        return Response({'mensaje': mensaje, "error": True}, status=401)
+    
+    if dia is not None:
+        dias_array = []
+        horarios = Diahora.objects.filter(asesoria__idusuario = mensaje, eslibre=0, estado="activo", dia=dia).distinct()
+        
+
+        return Response({'mensaje': dias_array, "error": False}, status=200)
+    else:
+        return Response({'mensaje': 'Bad request', "error": True}, status=400)
