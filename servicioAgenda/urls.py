@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-#from .reporte import ReporteView
+from .reporte import ReporteView
 
 from .Modules.Autenticacion import urls as autenticacion_urls
 from .Modules.Asesorias import urls as asesorias_urls
@@ -17,5 +17,5 @@ urlpatterns = [
     path('api/usuarios/', include(usuarios_urls)),
     path('api/asesorias/', include(asesorias_urls)),
     path('api/admin/', include(admin_urls)),
-    #path('reporte/', ReporteView.as_view(), name='reporte')
+    path('reporte/', ReporteView.as_view(), name='reporte')
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
