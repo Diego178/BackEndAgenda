@@ -10,4 +10,5 @@ urlpatterns = [
     path('cancelarAsAsesor/', views.cancelarAsesoriaAsesor),
     path('obtenerHorasByDia/', views.obtenerHorariosByDia),
     path('obtenerDisponibilidadHorarios/', views.obtenerDiasConDisponibilidad),
+    path('verificarDisponibilidadDia', views.verificarDisponibilidadDia),
 ]

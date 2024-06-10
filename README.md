@@ -138,17 +138,12 @@ datos zoom
 heroku logs --tail --app asesorias-cix
 
 Observciones:
-falla al registrar una asesoria como usuario no se muestra
-agregar inasistencia 
+- agregar inasistencia 
 limitar una asesoria por dia
 Revisar porque no se envian los correos a uv.mx
-revisar mensaje de registro de asesoria
-cambiar modal al eliminar un horario asesor
-Agregar spinner de carga
-crear tabla de idiomas para usuario y filtro cuando se quiera seleccionar al asesor
-acabar reporte y 
-Agregar en dia y hora y hay horas disponibles
-Arreglar bug al actualizar datos del asesor
+- filtro cuando se quiera seleccionar al asesor
+- acabar reporte 
+- editar tambien foto al actualizar datos del asesor
 agregar estado de las asesorias en las tarjetas por colores
 -azul, pendiente
 -naranja, sin agregar asistencia
