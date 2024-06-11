@@ -61,6 +61,7 @@ class AdminSerializer(serializers.ModelSerializer):
         
 class AsesorSerializerGETAdmin(serializers.ModelSerializer):
     fotoBase64 = serializers.SerializerMethodField()
+    
     class Meta:
         model = Asesor
         fields = fields = ['id_asesor', 'nombre', 'idioma', 'fotoBase64', 'email']

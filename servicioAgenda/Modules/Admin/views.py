@@ -5,7 +5,7 @@ from utils.validadores import es_dia_semana, es_hora_valida, es_valido_email, es
 from django.core.exceptions import ObjectDoesNotExist
 from servicioAgenda.authentication import verificarTokenAdmin, verificarTokenAsesor, verificarToken, verificarTokenUsuario
 from django.contrib.auth.hashers import make_password
-from ...serializers import AsesorSerializer, AsesorSerializerGET, CursoSerializer, DatosReunionSerializer
+from ...serializers import AsesorSerializer, AsesorSerializerGET, AsesorSerializerGETAdmin, CursoSerializer, DatosReunionSerializer
 import re 
 
 
@@ -19,6 +19,6 @@ def obtenerAsesores(request):
 
     asesores = Asesor.objects.all()
 
-    serializer = AsesorSerializer(asesores, many=True)
+    serializer = AsesorSerializerGETAdmin(asesores, many=True)
 
     return Response({'mensaje': serializer.data, "error": False}, status=200)
