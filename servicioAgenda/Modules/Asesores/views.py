@@ -7,6 +7,7 @@ from servicioAgenda.authentication import verificarTokenAsesor, verificarToken, 
 from django.contrib.auth.hashers import make_password
 from ...serializers import AsesorSerializer, AsesorSerializerGET, CursoSerializer, DatosReunionSerializer
 import re 
+import base64
 
 @api_view(['POST'])
 def registrarAsesor(request):
@@ -199,6 +200,9 @@ def obtenerDatosAsesor(request):
         return Response({'mensaje': mensaje, "error": True}, status=401)
     
     asesor = Asesor.objects.get(id_asesor=mensaje)
+    
+    # Decodificar fotoBase64 a una cadena de texto antes de enviarla
+    asesor.fotoBase64 = asesor.fotoBase64.decode('utf-8')
 
     serializer = AsesorSerializer(asesor)
 
@@ -209,6 +213,7 @@ def actualizarAsesor(request):
     nombre = request.data.get('nombre')
     idioma = request.data.get('idioma')
     email = request.data.get('email')
+    fotoBase64 = request.data.get('fotoBase64')
     token = request.META.get('HTTP_AUTHORIZATION')
 
     valido, mensaje = verificarTokenAsesor(token)
@@ -229,6 +234,7 @@ def actualizarAsesor(request):
         asesor.nombre = nombre
         asesor.idioma = idioma
         asesor.email = email
+        asesor.fotoBase64 = fotoBase64  # Asignar fotoBase64 directamente
      
         asesor.save()
    

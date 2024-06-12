@@ -109,8 +109,33 @@ def export_to_pdf(data, filename,mes):
     c = SimpleDocTemplate(buffer, pagesize=landscape(letter))
     story = []
     
+    if mes == 1:
+        mes_reporte = ' Enero'
+    elif mes == 2:
+        mes_reporte = ' Febrero'
+    elif mes == 3:
+        mes_reporte = ' Marzo'
+    elif mes == 4:
+        mes_reporte = ' Abril'
+    elif mes == 5:
+        mes_reporte = ' Mayo'
+    elif mes == 6:
+        mes_reporte = ' Junio'
+    elif mes == 7:
+        mes_reporte = ' Julio'
+    elif mes == 8:
+        mes_reporte = ' Agosto'
+    elif mes == 9:
+        mes_reporte = ' Septiembre'
+    elif mes == 10:
+        mes_reporte = ' Octubre'
+    elif mes == 11:
+        mes_reporte = ' Noviembre'
+    elif mes == 12:
+        mes_reporte = ' Diciembre'
+    
     if data == []:
-        header = [['No tuvo asesorias este mes']]
+        header = [['No tuvo asesorias este mes: '+mes_reporte]]
         # Crear la tabla
         table1 = Table(header)
         
@@ -136,30 +161,7 @@ def export_to_pdf(data, filename,mes):
     d1 = today.strftime("%d/%m/%Y")
     #Hacer encabezado
     #El encabezado debe llevar el Reporte de asesorias, el nombre del asesor y la fecha de creacion
-    if mes == 1:
-        mes_reporte = ' Enero'
-    elif mes == 2:
-        mes_reporte = ' Febrero'
-    elif mes == 3:
-        mes_reporte = ' Marzo'
-    elif mes == 4:
-        mes_reporte = ' Abril'
-    elif mes == 5:
-        mes_reporte = ' Mayo'
-    elif mes == 6:
-        mes_reporte = ' Junio'
-    elif mes == 7:
-        mes_reporte = ' Julio'
-    elif mes == 8:
-        mes_reporte = ' Agosto'
-    elif mes == 9:
-        mes_reporte = ' Septiembre'
-    elif mes == 10:
-        mes_reporte = ' Octubre'
-    elif mes == 11:
-        mes_reporte = ' Noviembre'
-    elif mes == 12:
-        mes_reporte = ' Diciembre'
+    
     header = [['Reporte de asesorias del mes: '+mes_reporte, 'Nombre del asesor: '+data[0]['Nombre asesor'], "Fecha: "+d1]]
     
     #para hacer pruebas que se desborda la segunda tabla voy a agregar rows en el encabezado
@@ -174,8 +176,8 @@ def export_to_pdf(data, filename,mes):
         ('TEXTCOLOR',(0,0),(-1,0),colors.black),
         ('ALIGN',(0,0),(-1,-1),'CENTER'),
         ('FONTNAME', (0,0), (-1,0), 'Helvetica-Bold'),
-        ('FONTSIZE', (0,0), (-1,0), 16),
-        ('BOTTOMPADDING', (0,0), (-1,0), 10),
+        ('FONTSIZE', (0,0), (-1,0), 10),
+        ('BOTTOMPADDING', (0,0), (-1,0), 8),
         ('BACKGROUND',(0,1),(-1,-1),colors.white),
         ('GRID',(0,0),(-1,-1),1,colors.white)
     ])
