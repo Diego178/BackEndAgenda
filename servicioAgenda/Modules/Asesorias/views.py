@@ -34,7 +34,9 @@ def obtenerAsesoriasAsesor(request):
             'hora_termino': asesoria.iddiahora.hora_termino,
             'curso': asesoria.idcurso.nombrecurso,
             'modalidad': asesoria.iddiahora.modalidad,
-            'escancelada': asesoria.escancelada
+            'escancelada': asesoria.escancelada,
+            'comentario': asesoria.comentario,
+            'asistio': asesoria.asistio
         }
         data.append(asesoria_data)
 
@@ -342,3 +344,26 @@ def verificarDisponibilidadDia(request):
         return Response({'mensaje': dias_array, "error": False}, status=200)
     else:
         return Response({'mensaje': 'Bad request', "error": True}, status=400)
+
+
+# Funcion para editar asistencia de asesoria
+@api_view(['PUT'])
+def editarAsistencia(request):
+    # Obtener los datos de la peticion
+    idAsesoria = request.data.get('id_asesoria')
+    asistio = request.data.get('asistio')
+    token = request.META.get('HTTP_AUTHORIZATION')
+
+    valido, mensaje = verificarTokenAsesor(token)
+    if not valido:
+        return Response({'mensaje': mensaje, "error": True}, status=401)
+
+    try:
+        asesoria = Asesoria.objects.get(id_asesoria=idAsesoria)
+    except ObjectDoesNotExist:
+        return Response({'mensaje': 'La asesoria que desea editar no existe', "error": False}, status=200) 
+
+    asesoria.asistio = asistio
+    asesoria.save()
+
+    return Response({'mensaje': 'Asistencia editada correctamente', "error": False}, status=200)

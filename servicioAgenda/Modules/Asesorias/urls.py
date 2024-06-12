@@ -11,4 +11,5 @@ urlpatterns = [
     path('obtenerHorasByDia/', views.obtenerHorariosByDia),
     path('obtenerDisponibilidadHorarios/', views.obtenerDiasConDisponibilidad),
     path('verificarDisponibilidadDia', views.verificarDisponibilidadDia),
+    path('marcarAsistencia/', views.editarAsistencia),
 ]
