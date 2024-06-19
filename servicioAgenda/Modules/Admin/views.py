@@ -4,6 +4,7 @@ from ...models import Asesor
 from servicioAgenda.authentication import verificarTokenAdmin
 from ...serializers import AsesorSerializer, AsesorSerializerGETAdmin
 from django.shortcuts import get_object_or_404
+from django.db.models import Count
 
 
 @api_view(['GET'])
@@ -14,7 +15,7 @@ def obtenerAsesores(request):
     if not valido:
         return Response({'mensaje': mensaje, "error": True}, status=401)
 
-    asesores = Asesor.objects.all()
+    asesores = Asesor.objects.annotate(num_asesorias=Count('asesorias'))
 
     serializer = AsesorSerializerGETAdmin(asesores, many=True)
 
@@ -43,5 +44,5 @@ def actualizarAsesor(request):
 
     if serializer.is_valid():
         serializer.save()
-        return Response(serializer.data, status=200)
-    return Response(serializer.errors, status=400)
+        return Response( { "error": False }, status=200 )
+    return Response({ "error": True }, status=400)

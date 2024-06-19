@@ -2,12 +2,13 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from ...models import Asesoria, Asesor, Curso, Diahora, Usuario, Datosreunionvirtual
 from django.core.exceptions import ObjectDoesNotExist
-from ...serializers import DiaHoraSerializer
+from ...serializers import AsesoriaSerializer, DiaHoraSerializer
 from utils.validadores import es_dia_semana, validar_fecha
 from servicioAgenda.email import enviarCorreo
 from utils.validadores import validar_fecha
 from servicioAgenda.authentication import verificarTokenAsesor, verificarTokenUsuario
 from datetime import datetime
+from django.utils import timezone
 from servicioAgenda.utils import obtenerColor
 
 
@@ -275,13 +276,22 @@ def obtenerHorariosByDia(request):
         horarios = Diahora.objects.filter(idasesor=idAsesor, dia=dia, modalidad=modalidad, eslibre=1, estado="activo")
         
         data = []
+        dias_ocupados = []
         
+        hoy = timezone.now().date() 
+        asesorias = Asesoria.objects.filter(idusuario=mensaje, escancelada=0, fecha__gt=hoy)
+        for asesoria in asesorias:
+            dias_ocupados.append(
+                asesoria.iddiahora.dia
+            )
+
         for hora in horarios:
-            hora_data = {
-                'idDiaHora': hora.id_diahora,
-                "hora": hora.hora_inicio.strftime("%H:%M") + " a " + hora.hora_termino.strftime("%H:%M")
-            }
-            data.append(hora_data)
+            if not hora.dia in dias_ocupados:
+                hora_data = {
+                    'idDiaHora': hora.id_diahora,
+                    "hora": hora.hora_inicio.strftime("%H:%M") + " a " + hora.hora_termino.strftime("%H:%M")
+                }
+                data.append(hora_data)
 
         return Response({'mensaje': data, "error": False}, status=200)
     else:
@@ -303,8 +313,16 @@ def obtenerDiasConDisponibilidad(request):
         
         dias = ["lunes", "martes", "miercoles", "jueves", "viernes"]
         dia_data = []
+        dias_ocupados = []
         
-        
+        hoy = timezone.now().date() 
+        asesorias = Asesoria.objects.filter(idusuario=mensaje, escancelada=0, fecha__gt=hoy)
+
+        for asesoria in asesorias:
+            dias_ocupados.append(
+                asesoria.iddiahora.dia
+            )
+            
         if dia_semana_actual < 4:  # Si es viernes (4) o sábado (5) o domingo (6) # Si es un día de entre semana (lunes a jueves)
             diasArray = []
             dia_semana_actual = dia_semana_actual + 1
@@ -319,9 +337,12 @@ def obtenerDiasConDisponibilidad(request):
             dia_data.append({
                 "dia": dia.capitalize(),
                 "valor": dia,
-                "tieneHoras": len(horarios_serializados) > 0
+                "tieneHoras": len(horarios_serializados) > 0,
+                "ocupado" : dia in dias_ocupados,
             })
-
+            
+        #for dia in dia_data:
+            
         return Response({'mensaje': dia_data, "error": False}, status=200)
     else:
         return Response({'mensaje': 'Bad request', "error": True}, status=400)

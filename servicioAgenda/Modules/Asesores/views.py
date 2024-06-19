@@ -1,6 +1,6 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from ...models import Asesor, Datosreunionvirtual, Diahora, Asesoria, Curso
+from ...models import Asesor, Datosreunionvirtual, Diahora, Asesoria, Curso, Idioma
 from utils.validadores import es_dia_semana, es_hora_valida, es_valido_email, es_valido_modalidad, es_valido_password
 from django.core.exceptions import ObjectDoesNotExist
 from servicioAgenda.authentication import verificarTokenAsesor, verificarToken, verificarTokenUsuario
@@ -318,12 +318,23 @@ def eliminarCurso(request):
 
 @api_view(['GET'])
 def obtenerAsesores(request):
+    token = request.META.get('HTTP_AUTHORIZATION')
 
-    asesores = Asesor.objects.all()
-
-    serializer = AsesorSerializerGET(asesores, many=True)
-
-    return Response({'mensaje': serializer.data, "error": False}, status=200)
+    valido, mensaje = verificarTokenUsuario(token)
+    if not valido:
+        return Response({'mensaje': mensaje, "error": True}, status=401)
+    if Idioma.objects.filter(id_usuario=mensaje).exists():
+        idiomas_qs = Idioma.objects.filter(id_usuario=mensaje)
+        
+        idiomas = idiomas_qs.values_list('idioma', flat=True)
+        print(idiomas)
+        asesores = Asesor.objects.filter(idioma__in=idiomas)
+        print(asesores)
+        serializer = AsesorSerializerGET(asesores, many=True)
+        print(serializer)
+        return Response({'mensaje': serializer.data, "error": False}, status=200)
+    else:
+        return Response(status=204)
 
 @api_view(['GET'])
 def obtenerAsesoresAdmin(request):

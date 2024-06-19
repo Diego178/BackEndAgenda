@@ -61,10 +61,11 @@ class AdminSerializer(serializers.ModelSerializer):
         
 class AsesorSerializerGETAdmin(serializers.ModelSerializer):
     fotoBase64 = serializers.SerializerMethodField()
+    num_asesorias = serializers.IntegerField(read_only=True)
     
     class Meta:
         model = Asesor
-        fields = fields = ['id_asesor', 'nombre', 'idioma', 'fotoBase64', 'email']
+        fields = ['id_asesor', 'nombre', 'fotoBase64', 'idioma', 'email', 'num_asesorias']
     def get_fotoBase64(self, obj):
         if obj.fotoBase64:
             return obj.fotoBase64.decode('utf-8')

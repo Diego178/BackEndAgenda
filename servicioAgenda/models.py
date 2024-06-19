@@ -54,7 +54,7 @@ class Asesoria(models.Model):
     fecha = models.DateField()
     escancelada = models.BooleanField()
     asistio = models.BooleanField() 
-    idasesor = models.ForeignKey(Asesor, models.CASCADE, db_column='idAsesor', blank=True, null=True)  # Field name made lowercase.
+    idasesor = models.ForeignKey(Asesor, models.CASCADE, db_column='idAsesor',related_name='asesorias', blank=True, null=True)  # Field name made lowercase.
     iddiahora = models.ForeignKey(Diahora, models.CASCADE, db_column='idDiaHora', blank=True, null=True)  # Field name made lowercase.
     idusuario = models.ForeignKey(Usuario, models.CASCADE, db_column='idUsuario', blank=True, null=True)  # Field name made lowercase.
     idcurso = models.ForeignKey(Curso, models.CASCADE, db_column='idCurso', blank=True, null=True)
