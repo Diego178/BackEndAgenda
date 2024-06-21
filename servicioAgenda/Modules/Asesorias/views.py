@@ -8,7 +8,6 @@ from servicioAgenda.email import enviarCorreo
 from utils.validadores import validar_fecha
 from servicioAgenda.authentication import verificarTokenAsesor, verificarTokenUsuario
 from datetime import datetime
-from django.utils import timezone
 from servicioAgenda.utils import obtenerColor
 
 
@@ -278,12 +277,14 @@ def obtenerHorariosByDia(request):
         data = []
         dias_ocupados = []
         
-        hoy = timezone.now().date() 
-        asesorias = Asesoria.objects.filter(idusuario=mensaje, escancelada=0, fecha__gt=hoy)
+        ahora = datetime.now()
+        hoy = ahora.date()
+        asesorias = Asesoria.objects.filter(idusuario=mensaje, escancelada=0, fecha__gte=hoy)
         for asesoria in asesorias:
-            dias_ocupados.append(
-                asesoria.iddiahora.dia
-            )
+            if(asesoria.iddiahora.eslibre == 0):
+                dias_ocupados.append(
+                    asesoria.iddiahora.dia
+                )
 
         for hora in horarios:
             if not hora.dia in dias_ocupados:
@@ -315,25 +316,32 @@ def obtenerDiasConDisponibilidad(request):
         dia_data = []
         dias_ocupados = []
         
-        hoy = timezone.now().date() 
-        asesorias = Asesoria.objects.filter(idusuario=mensaje, escancelada=0, fecha__gt=hoy)
+        ahora = datetime.now()
+
+        hoy = ahora.date()
+        print(hoy)
+        asesorias = Asesoria.objects.filter(idusuario=mensaje, escancelada=0, fecha__gte=hoy)
 
         for asesoria in asesorias:
-            dias_ocupados.append(
-                asesoria.iddiahora.dia
-            )
-            
+            print(asesoria.fecha)
+            if(asesoria.iddiahora.eslibre == 0):
+                dias_ocupados.append(
+                    asesoria.iddiahora.dia
+                )
+        print(dia_semana_actual)
         if dia_semana_actual < 4:  # Si es viernes (4) o sábado (5) o domingo (6) # Si es un día de entre semana (lunes a jueves)
             diasArray = []
-            dia_semana_actual = dia_semana_actual + 1
             for i in range(5 - dia_semana_actual ):  # 5 - dia_semana_actual nos da los días restantes de la semana laboral
                 dia_index = (dia_semana_actual + i) % 7
                 diasArray.append(dias[dia_index])
+                dia_semana_actual = dia_semana_actual + 1
         else:
             diasArray = dias;
         for dia in diasArray:
             horarios = Diahora.objects.filter(idasesor=idAsesor, modalidad=modalidad, eslibre=1, estado="activo", dia=dia)
             horarios_serializados = DiaHoraSerializer(horarios, many=True).data
+            print(dias_ocupados)
+            print(dia)
             dia_data.append({
                 "dia": dia.capitalize(),
                 "valor": dia,

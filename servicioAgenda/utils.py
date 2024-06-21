@@ -1,22 +1,17 @@
-from datetime import datetime, date
+from django.utils import timezone
 def obtenerColor(esCancelada, asistio, fecha):
     print(fecha)
-    # hoy = datetime.now()
-    
-    
-    # hoy = datetime.strptime(hoy, '%Y-%m-%d')
-    
-    # print(hoy)
-    # if asistio and hoy > fecha :
-    #     return "green"
+    hoy = timezone.now().date()
+    if not esCancelada and hoy == fecha:
+        return "grey"
+    if asistio and hoy > fecha:
+         return "green"
         
     if esCancelada:
         return "red"
-    else: 
-        return "green"
     
-    # if not asistio and hoy > fecha:
-    #     return "blue"
+    if not asistio and hoy > fecha:
+        return "blue"
     
-    # if not asistio and hoy < fecha:
-    #     return "orange"
+    if not asistio and hoy <= fecha:
+        return "orange"
