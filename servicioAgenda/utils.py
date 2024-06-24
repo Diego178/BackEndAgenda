@@ -5,13 +5,13 @@ def obtenerColor(esCancelada, asistio, fecha):
     if not esCancelada and hoy == fecha:
         return "grey"
     if asistio and hoy > fecha:
-         return "green"
+         return "#28B463"
         
     if esCancelada:
         return "red"
     
     if not asistio and hoy > fecha:
-        return "blue"
+        return "orange"
     
     if not asistio and hoy <= fecha:
-        return "orange"
+        return "#3498DB"

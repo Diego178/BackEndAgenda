@@ -139,13 +139,15 @@ heroku logs --tail --app asesorias-cix
 
 Observciones:
 Revisar porque no se envian los correos a uv.mx
-- filtro cuando se quiera seleccionar al asesor
 agregar estado de las asesorias en las tarjetas por colores
 -azul, pasadas con asistencia
 -naranja, asesorias pasadas sin asistencias
 -roja, cancelada
 -verde, hoy y pendientes sin cancelar
 pruebas de usabilidad,
+inhabilitar asesores
+agregar dashboard de admins y usuarios
+
 
 sudo /usr/local/mysql/support-files/mysql.server start
 sudo /usr/local/mysql/support-files/mysql.server status
