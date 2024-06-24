@@ -328,8 +328,9 @@ def obtenerDiasConDisponibilidad(request):
                 dias_ocupados.append(
                     asesoria.iddiahora.dia
                 )
+        print("dia hoy: ")
         print(dia_semana_actual)
-        if dia_semana_actual < 4:  # Si es viernes (4) o sábado (5) o domingo (6) # Si es un día de entre semana (lunes a jueves)
+        if dia_semana_actual < 4 and dia_semana_actual > 0:  # Si es viernes (4) o sábado (5) o domingo (6) # Si es un día de entre semana (lunes a jueves)
             diasArray = []
             for i in range(5 - dia_semana_actual ):  # 5 - dia_semana_actual nos da los días restantes de la semana laboral
                 dia_index = (dia_semana_actual + i) % 7
