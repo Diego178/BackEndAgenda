@@ -309,40 +309,39 @@ def obtenerDiasConDisponibilidad(request):
         return Response({'mensaje': mensaje, "error": True}, status=401)
     
     if modalidad is not None and idAsesor is not None:
-        hoy = datetime.now()
+        ahora = datetime.now()
+
+        hoy = ahora.date()
         dia_semana_actual = hoy.weekday()
         
         dias = ["lunes", "martes", "miercoles", "jueves", "viernes"]
         dia_data = []
         dias_ocupados = []
         
-        ahora = datetime.now()
-
-        hoy = ahora.date()
+        
         print(hoy)
         asesorias = Asesoria.objects.filter(idusuario=mensaje, escancelada=0, fecha__gte=hoy)
 
         for asesoria in asesorias:
-            print(asesoria.fecha)
+
             if(asesoria.iddiahora.eslibre == 0):
                 dias_ocupados.append(
                     asesoria.iddiahora.dia
                 )
         print("dia hoy: ")
         print(dia_semana_actual)
-        if dia_semana_actual < 4 and dia_semana_actual > 0:  # Si es viernes (4) o sábado (5) o domingo (6) # Si es un día de entre semana (lunes a jueves)
+        if dia_semana_actual < 4 and dia_semana_actual >= 0:
             diasArray = []
-            for i in range(5 - dia_semana_actual ):  # 5 - dia_semana_actual nos da los días restantes de la semana laboral
-                dia_index = (dia_semana_actual + i) % 7
+
+            for i in range(4 - dia_semana_actual ): # 5 - dia_semana_actual nos da los días restantes de la semana laboral
+                dia_index = dia_semana_actual + i + 1
                 diasArray.append(dias[dia_index])
-                dia_semana_actual = dia_semana_actual + 1
         else:
             diasArray = dias;
         for dia in diasArray:
             horarios = Diahora.objects.filter(idasesor=idAsesor, modalidad=modalidad, eslibre=1, estado="activo", dia=dia)
             horarios_serializados = DiaHoraSerializer(horarios, many=True).data
-            print(dias_ocupados)
-            print(dia)
+   
             dia_data.append({
                 "dia": dia.capitalize(),
                 "valor": dia,
@@ -350,7 +349,6 @@ def obtenerDiasConDisponibilidad(request):
                 "ocupado" : dia in dias_ocupados,
             })
             
-        #for dia in dia_data:
             
         return Response({'mensaje': dia_data, "error": False}, status=200)
     else:
