@@ -148,6 +148,10 @@ pruebas de usabilidad,
 inhabilitar asesores
 agregar dashboard de admins y usuarios
 
+osbservaciones:
+cuando sea cancelada no debe mostrar los pickers de asistencia
+checar el reload de usuario al cancelar
+
 
 sudo /usr/local/mysql/support-files/mysql.server start
 sudo /usr/local/mysql/support-files/mysql.server status

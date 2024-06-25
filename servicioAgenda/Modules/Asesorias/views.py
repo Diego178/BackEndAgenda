@@ -23,6 +23,9 @@ def obtenerAsesoriasAsesor(request):
     asesorias = Asesoria.objects.filter(idasesor=mensaje)
     data = []
     for asesoria in asesorias:
+        color = obtenerColor(asesoria.escancelada, asesoria.asistio, asesoria.fecha)
+        print(color)
+        print(asesoria.fecha)
         asesoria_data = {
             'id_asesoria': asesoria.id_asesoria,
             'tipo': asesoria.tipo,
@@ -36,7 +39,8 @@ def obtenerAsesoriasAsesor(request):
             'modalidad': asesoria.iddiahora.modalidad,
             'escancelada': asesoria.escancelada,
             'comentario': asesoria.comentario,
-            'asistio': asesoria.asistio
+            'asistio': asesoria.asistio,
+            'color': color,
         }
         data.append(asesoria_data)
 
