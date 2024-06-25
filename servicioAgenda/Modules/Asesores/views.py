@@ -466,3 +466,20 @@ def actualizarDatosReunionAsesoria(request):
     else:
         return Response({'mensaje': 'Bad request', "error": True}, status=400)
 
+@api_view(['PUT'])
+def cambiarEstadoAsesor(request):
+    token = request.META.get('HTTP_AUTHORIZATION')
+    estado = request.data.get('estado')
+
+    valido, mensaje = verificarTokenAsesor(token)
+    if not valido:
+        return Response({'mensaje': mensaje, "error": True}, status=401)
+    
+    if estado is not None:
+        asesor = Asesor.objects.get(idasesor=mensaje)
+        if estado == 0:
+            if Asesoria.objects.filter(idasesor=asesor ).count() > 0:
+                return Response({'mensaje': 'No se puede desactivar ', "error": True}, status=400)
+            
+    else:
+        return Response({'mensaje': 'Bad request', "error": True}, status=400)
