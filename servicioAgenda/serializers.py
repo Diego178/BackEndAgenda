@@ -57,7 +57,7 @@ class DatosReunionSerializer(serializers.ModelSerializer):
 class AdminSerializer(serializers.ModelSerializer):
     class Meta:
         model = Admin
-        fields = ['id', 'nombre']
+        fields = ['id', 'nombre', 'email', 'password']
         
 class AsesorSerializerGETAdmin(serializers.ModelSerializer):
     fotoBase64 = serializers.SerializerMethodField()
@@ -70,3 +70,15 @@ class AsesorSerializerGETAdmin(serializers.ModelSerializer):
         if obj.fotoBase64:
             return obj.fotoBase64.decode('utf-8')
         return None
+
+class UsuarioSerializerGETAdmin(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Usuario
+        fields = ['id_usuario', 'nombre', 'matricula', 'email']
+        
+class AdminSerializerGETAdmin(serializers.ModelSerializer):
+
+    class Meta:
+        model = Admin
+        fields = ['id', 'nombre', 'email']
