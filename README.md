@@ -151,10 +151,11 @@ agregar dashboard de admins y usuarios
 observaciones:
 reload cancelar
 contraseña olvidada
-admins crud
-usuarios crud
-reportar error
-
+usuarios crud -
+reportar error -
+ver error al cancelar asesoria como asesor
+error al marcar la asistencia
+responsive
 
 
 sudo /usr/local/mysql/support-files/mysql.server start

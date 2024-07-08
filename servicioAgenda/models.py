@@ -7,6 +7,7 @@ class Asesor(models.Model):
     email = models.EmailField(max_length=45)
     password = models.CharField(max_length=16)
     fotoBase64 = models.TextField()
+    activo = models.BooleanField()
 
     class Meta:
         managed = False

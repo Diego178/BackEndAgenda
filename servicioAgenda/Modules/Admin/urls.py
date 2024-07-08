@@ -9,4 +9,5 @@ urlpatterns = [
     path('obtenerAdmins/', views.obtenerAdmins),
     path('registrarAdmin/', views.registrarAdministrador),
     path('actualizarAdmin/', views.actualizarAdmin),
+    path('estadoAsesor/', views.estadoAsesor)
 ]
