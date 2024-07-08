@@ -3,5 +3,6 @@ from . import views
 
 urlpatterns = [
     path('', views.login),
-    path('admin/', views.loginAdmin)
+    path('admin/', views.loginAdmin),
+    path('recuperar-contrasena/', views.recuperarContrasenia)
 ]

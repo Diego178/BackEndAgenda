@@ -6,7 +6,7 @@ from ...serializers import CursoSerializer
 from utils.validadores import es_valido_email, es_valido_matricula, es_valido_password
 from ...models import Usuario
 from ...serializers import UsuarioSerializer
-from servicioAgenda.authentication import verificarTokenUsuario
+from servicioAgenda.authentication import verificarTokenUsuario, verificarTokenRecuperacion
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.hashers import make_password
 
@@ -150,3 +150,36 @@ def eliminarIdioma(request):
         return Response({'mensaje': 'Idioma eliminado correctamente.', "error": False}, status=200)
     else:
         return Response({'mensaje': 'Bad request', "error": True}, status=400)
+    
+@api_view(['POST'])
+def cambiarContrasena(request):
+    token = request.META.get('HTTP_AUTHORIZATION')
+    contrasena_nueva = request.data.get('contrasena_nueva')
+    print(contrasena_nueva)
+    print(token)
+    
+    try:
+        valido, mensaje = verificarTokenRecuperacion(token)
+        print(mensaje)
+        if not valido:
+            return Response({'mensaje': mensaje, "error": True}, status=401)
+        
+        if contrasena_nueva is not None:
+            try:
+                usuario = Usuario.objects.get(id_usuario=mensaje)
+                usuario.password = make_password(contrasena_nueva)
+                usuario.save()
+                return Response({'mensaje': 'Contraseña actualizada correctamente.', "error": False}, status=200)
+            except Usuario.DoesNotExist:
+                return Response({'mensaje': 'Usuario no encontrado.', "error": True}, status=404)
+        else:
+            return Response({'mensaje': 'Bad request', "error": True}, status=400)
+    except Exception as e:
+        # Log the exception e if necessary
+        return Response({'mensaje': 'Internal server error', "error": True}, status=500)
+
+    # Catch-all return statement to handle any missed cases
+    return Response({'mensaje': 'Unexpected error', "error": True}, status=500)
+
+
+    

@@ -9,4 +9,5 @@ urlpatterns = [
     path('obtenerIdiomas/', views.obtenerIdiomas),
     path('agregarIdioma/', views.agregarIdioma),
     path('eliminarIdioma/', views.eliminarIdioma),
+    path('recuperarContrasena/', views.cambiarContrasena),
 ]
