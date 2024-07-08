@@ -8,7 +8,7 @@ from servicioAgenda.authentication import generar_token_recuperacion
 
 def enviarCorreoRecuperacion(email,id_usuario):
     token = generar_token_recuperacion(email,id_usuario)
-    url_recuperacion = f"http://localhost:5173/recuperar-contrasena?token={token}"
+    url_recuperacion = f"https://front-end-agenda.vercel.app/recuperar-contrasena?token={token}"
     mensaje = f"Hola, has solicitado recuperar tu contraseña, por favor usa el siguiente enlace para restablecerla (expira en 1 hora): {url_recuperacion}\nSi no fuiste tú, ignora este mensaje."
     asunto = "Recuperación de contraseña"
     enviarCorreo(mensaje, asunto, email)
