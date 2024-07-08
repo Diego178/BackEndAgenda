@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from servicioAgenda.authentication import crearToken, crearTokenAdmin
 from ...models import Admin, Usuario, Asesor
 from ...serializers import AdminSerializer, UsuarioSerializer, AsesorSerializer
+from servicioAgenda.email import enviarCorreoRecuperacion
 
 
 
@@ -75,4 +76,19 @@ def loginAdmin(request):
                 return Response({'mensaje': 'No se encontró ningúna cuenta con las credenciales proporcionadas', "error": True}, status=200)
         except Exception as e:
             return Response({'mensaje': 'Ocurrió un error inesperado: {}'.format(e), "error": True}, status=500)
-            
+        
+#Aqui va el codigo de recuperar la contraseña
+@api_view(['POST'])
+def recuperarContrasenia(request):
+    email = request.data.get('email')
+    if email is not None:
+        try:
+            usuario = Usuario.objects.get(email=email)
+            enviarCorreoRecuperacion(email,usuario.id_usuario)
+            return Response({'mensaje': 'Se ha enviado un correo con las instrucciones para recuperar tu contraseña', "error": False}, status=200)
+        except Usuario.DoesNotExist:
+            return Response({'mensaje': 'No se encontró ningún usuario con el correo proporcionado', "error": True}, status=400)
+        except Exception as e:
+            return Response({'mensaje': 'Ocurrió un error inesperado: {}'.format(e), "error": True}, status=500)
+
+

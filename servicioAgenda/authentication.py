@@ -148,3 +148,39 @@ def verificarTokenAdmin(token):
         return False, 'El token ha expirado'
     except jwt.InvalidTokenError:
         return False, 'Token inválido'
+    
+    
+def generar_token_recuperacion(email,id_usuario):
+    payload = {
+        'email': email,
+        'exp': datetime.utcnow() + timedelta(hours=1),  # El token expira en 1 hora
+        'user_id': id_usuario
+    }
+    token = jwt.encode(payload, 'access_secret', algorithm='HS256')
+    return token
+    
+def verificarTokenRecuperacion(token):
+    token = token.split(' ')[1]
+    try:
+        # Decodificar el token
+        payload = jwt.decode(token, 'access_secret', algorithms=['HS256'])
+
+        # Verificar la expiración del token
+        fecha_expiracion = datetime.fromtimestamp(payload['exp'])
+        if fecha_expiracion < datetime.now():
+            return False, 'El token ha expirado', ''
+
+        # Verificar que el user_id sea válido
+        email = payload.get('email')
+        user_id = payload.get('user_id')
+
+        if not Usuario.objects.filter(id_usuario=user_id).exists():
+            return False, 'No existe el usuario en la BD', ''
+        
+        # Si todas las verificaciones pasaron, el token es válido
+        return True, user_id
+
+    except jwt.ExpiredSignatureError:
+        return False, 'El token ha expirado', ''
+    except jwt.InvalidTokenError:
+        return False, 'Token inválido', ''
