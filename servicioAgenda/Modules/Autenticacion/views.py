@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from servicioAgenda.authentication import crearToken, crearTokenAdmin
 from ...models import Admin, Usuario, Asesor
 from ...serializers import AdminSerializer, UsuarioSerializer, AsesorSerializer
-from servicioAgenda.email import enviarCorreoRecuperacion
+from servicioAgenda.email_service import enviarCorreoRecuperacion
 
 
 
@@ -84,11 +84,13 @@ def recuperarContrasenia(request):
     if email is not None:
         try:
             usuario = Usuario.objects.get(email=email)
-            enviarCorreoRecuperacion(email,usuario.id_usuario)
+            enviarCorreoRecuperacion(email,usuario.id_usuario, usuario.nombre)
             return Response({'mensaje': 'Se ha enviado un correo con las instrucciones para recuperar tu contraseña', "error": False}, status=200)
         except Usuario.DoesNotExist:
-            return Response({'mensaje': 'No se encontró ningún usuario con el correo proporcionado', "error": True}, status=400)
+            return Response({'mensaje': 'No se encontró ningún usuario con el correo proporcionado', "error": False}, status=200)
         except Exception as e:
             return Response({'mensaje': 'Ocurrió un error inesperado: {}'.format(e), "error": True}, status=500)
+    else:
+        return Response({'mensaje': 'Bad request', "error": True}, status=400)
 
 

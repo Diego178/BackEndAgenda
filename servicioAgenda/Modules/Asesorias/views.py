@@ -2,9 +2,9 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from ...models import Asesoria, Asesor, Curso, Diahora, Usuario, Datosreunionvirtual
 from django.core.exceptions import ObjectDoesNotExist
-from ...serializers import AsesoriaSerializer, DiaHoraSerializer
+from ...serializers import DiaHoraSerializer
 from utils.validadores import es_dia_semana, validar_fecha
-from servicioAgenda.email import enviarCorreo
+from servicioAgenda.email_service import enviarCorreo
 from utils.validadores import validar_fecha
 from servicioAgenda.authentication import verificarTokenAsesor, verificarTokenUsuario
 from datetime import datetime
@@ -154,7 +154,7 @@ def registrarAsesoria(request):
             return Response({'mensaje': 'Error, el curso no existe en la base de datos.', "error": True}, status=200)
         
         
-        enviarCorreo('Hola, ' + asesor.nombre + ' el usuario '+ usuario.nombre + ' ha agregado una nueva asesoria para la fecha ' +  fecha ,'Asesoria nueva', asesor.email)
+        enviarCorreo('Hola, ' + asesor.nombre + ' el usuario '+ usuario.nombre + ' ha agregado una nueva asesoria para la fecha ' +  fecha ,'Asesoria nueva', asesor.email, usuario.nombre)
 
         diaHora.eslibre = 0;
         diaHora.save()
@@ -186,7 +186,7 @@ def cancelarAsesoriaUsuario(request):
 
     usuario = Usuario.objects.get(id_usuario=mensaje)
 
-    enviarCorreo('Hola, el usuario ' + usuario.nombre + ' ha cancelado la asesoria de la fecha '+ str(fecha), 'Una asesoria se cancelo', asesoria_eliminar.idasesor.email)
+    enviarCorreo('Hola, el usuario ' + usuario.nombre + ' ha cancelado la asesoria de la fecha '+ str(fecha), 'Una asesoria se cancelo', asesoria_eliminar.idasesor.email, usuario.nombre)
 
     try:
         diaHora= Diahora.objects.get(id_diahora=asesoria_eliminar.iddiahora.id_diahora)
@@ -225,7 +225,7 @@ def cancelarAsesoriaAsesor(request):
 
     asesor = Asesor.objects.get(id_asesor=mensaje)
 
-    enviarCorreo('Hola, el asesor ' + asesor.nombre + ' ha cancelado la asesoria de la fecha '+ str(fecha), 'Una asesoria se cancelo', asesoria_eliminar.idasesor.email)
+    enviarCorreo('Hola, el asesor ' + asesor.nombre + ' ha cancelado la asesoria de la fecha '+ str(fecha), 'Una asesoria se cancelo', asesoria_eliminar.idasesor.email, "")
 
     try:
         diaHora= Diahora.objects.get(id_diahora=asesoria_eliminar.iddiahora.id_diahora)
