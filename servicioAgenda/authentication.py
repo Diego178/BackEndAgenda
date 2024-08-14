@@ -153,7 +153,7 @@ def verificarTokenAdmin(token):
 def generar_token_recuperacion(email,id_usuario):
     payload = {
         'email': email,
-        'exp': datetime.utcnow() + timedelta(hours=1),  # El token expira en 1 hora
+        'exp': datetime.now() + timedelta(hours=1),  # El token expira en 1 hora
         'user_id': id_usuario
     }
     token = jwt.encode(payload, 'access_secret', algorithm='HS256')

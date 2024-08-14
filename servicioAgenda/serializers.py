@@ -65,7 +65,7 @@ class AsesorSerializerGETAdmin(serializers.ModelSerializer):
     
     class Meta:
         model = Asesor
-        fields = ['id_asesor', 'nombre', 'fotoBase64', 'idioma', 'email', 'num_asesorias']
+        fields = ['id_asesor', 'nombre', 'fotoBase64', 'idioma', 'email', 'num_asesorias', 'activo']
     def get_fotoBase64(self, obj):
         if obj.fotoBase64:
             return obj.fotoBase64.decode('utf-8')

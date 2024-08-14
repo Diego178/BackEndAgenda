@@ -11,3 +11,5 @@ python-dateutil==2.9.0.post0
 python-dotenv==1.0.1
 reportlab==4.2.0
 whitenoise==6.6.0
+mailersend==0.5.8
+

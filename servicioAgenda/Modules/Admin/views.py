@@ -1,6 +1,6 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from ...models import Admin, Asesor, Usuario
+from ...models import Admin, Asesor, Asesoria, Usuario
 from servicioAgenda.authentication import verificarTokenAdmin
 from ...serializers import AdminSerializer, AdminSerializerGETAdmin, AsesorSerializer, AsesorSerializerGETAdmin, UsuarioSerializer, UsuarioSerializerGETAdmin
 from django.shortcuts import get_object_or_404
@@ -60,6 +60,33 @@ def obtenerUsuarios(request):
     serializer = UsuarioSerializerGETAdmin(usuarios, many=True)
 
     return Response({'mensaje': serializer.data, "error": False}, status=200)
+
+@api_view(['PATCH'])
+def estadoAsesor(request):
+    token = request.META.get('HTTP_AUTHORIZATION')
+    id_asesor = request.data.get('id_asesor')
+    
+    valido, mensaje = verificarTokenAdmin(token)
+    if not valido:
+        return Response({'mensaje': mensaje, "error": True}, status=401)
+    if id_asesor is not None:
+        asesor = get_object_or_404(Asesor, pk=id_asesor)
+        
+        mensaje = ''
+        if asesor.activo:
+            if Asesoria.objects.filter(idasesor=asesor).exists():
+                return Response({'mensaje': 'No se puede desactivar la cuenta, el asesor tiene asesorias activas pendientes, por favor cancelelas primero para poder descativar la cuenta.', "error": True}, status=200)
+            else:    
+                asesor.activo = 0
+                mensaje = 'Se desactivo la cuenta'
+        else:
+            asesor.activo = 1
+            mensaje = 'Se activo la cuenta'
+        
+        asesor.save()
+        return Response({'mensaje': mensaje, "error": False}, status=200)
+    return Response({ "error": True }, status=400)
+        
 
 @api_view(['PATCH'])
 def actualizarUsuario(request):

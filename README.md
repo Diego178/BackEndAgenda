@@ -145,15 +145,19 @@ agregar estado de las asesorias en las tarjetas por colores
 -roja, cancelada
 -verde, hoy y pendientes sin cancelar
 pruebas de usabilidad,
-inhabilitar asesores
-agregar dashboard de admins y usuarios
 
 observaciones:
 reload cancelar
 contraseña olvidada
-admins crud
-usuarios crud
-reportar error
+usuarios crud -
+ver error al cancelar asesoria como asesor
+error al marcar la asistencia
+responsive
+- poner restriccion que debe agregar sus datos de zoom 
+- arreglar colores
+- agregar servicio smpt
+- agregar 'tienes algun problema'
+- Agregar spinners de carga en admin
 
 
 
