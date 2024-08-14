@@ -155,8 +155,6 @@ def eliminarIdioma(request):
 def cambiarContrasena(request):
     token = request.META.get('HTTP_AUTHORIZATION')
     contrasena_nueva = request.data.get('contrasena_nueva')
-    print(contrasena_nueva)
-    print(token)
     
     try:
         valido, mensaje = verificarTokenRecuperacion(token)
