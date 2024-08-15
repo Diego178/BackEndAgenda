@@ -156,8 +156,12 @@ def cambiarContrasena(request):
     contrasena_nueva = request.data.get('contrasena_nueva')
     
     try:
-        valido, mensaje = verificarTokenRecuperacion(token)
-        print(mensaje)
+        resultado = verificarTokenRecuperacion(token)
+        
+        if len(resultado) != 2:
+            raise ValueError("La función verificarTokenRecuperacion debe devolver exactamente dos valores.")
+        
+        valido, mensaje = resultado
         if not valido:
             return Response({'mensaje': mensaje, "error": True}, status=401)
         
@@ -171,12 +175,11 @@ def cambiarContrasena(request):
                 return Response({'mensaje': 'Usuario no encontrado.', "error": True}, status=404)
         else:
             return Response({'mensaje': 'Bad request', "error": True}, status=400)
+    except ValueError as ve:
+        print(f"ValueError: {ve}")
+        return Response({'mensaje': 'Error de valor', "error": True, "detalle": str(ve)}, status=500)
     except Exception as e:
-        # Log the exception e if necessary
-        return Response({'mensaje': 'Internal server error', "error": True}, status=500)
-
-    # Catch-all return statement to handle any missed cases
-    return Response({'mensaje': 'Unexpected error', "error": True}, status=500)
-
+        print(f"Exception: {e}")
+        return Response({'mensaje': 'Error interno del servidor', "error": True, "detalle": str(e)}, status=500)
 
     
